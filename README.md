@@ -75,3 +75,41 @@ It supports secure authentication, real-time messaging, video calls, and a respo
 
 ## 📁 Project Structure
 
+```
+Connectify/
+│
+├── backend/
+│ ├── src/
+│ │ ├── controllers/
+│ │ ├── lib/
+│ │ ├── middleware/
+│ │ ├── models/
+│ │ ├── routes/
+│ │ └── server.js
+│ ├── .env
+│ ├── package.json
+│ └── package-lock.json
+│
+├── frontend/
+│ ├── dist/
+│ ├── public/
+│ ├── src/
+│ │ ├── components/
+│ │ ├── constants/
+│ │ ├── hooks/
+│ │ ├── lib/
+│ │ ├── pages/
+│ │ ├── store/
+│ │ ├── App.jsx
+│ │ ├── main.jsx
+│ │ └── index.css
+│ ├── index.html
+│ ├── vite.config.js
+│ ├── tailwind.config.js
+│ ├── postcss.config.js
+│ └── package.json
+│
+├── package.json
+├── package-lock.json
+└── README.md
+```
