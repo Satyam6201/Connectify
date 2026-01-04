@@ -113,3 +113,18 @@ Connectify/
 ├── package-lock.json
 └── README.md
 ```
+
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file inside the **backend** folder:
+
+```env
+PORT=5001
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET_KEY=your_jwt_secret
+STREAM_API_KEY=your_stream_api_key
+STREAM_API_SECRET=your_stream_api_secret
+```
