@@ -1,3 +1,5 @@
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/443baa7c-c7d1-4870-8f7a-79f10ba0d52a" />
+
 # 💬 Connectify – Real-Time Chat & Video Calling App
 
 <p align="center">
