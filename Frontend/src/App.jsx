@@ -55,6 +55,14 @@ const App = () => {
             <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
           )}
         />
+         <Route path='/friends' element={isAuthenticated && isOnboarded ? 
+          ( <Layout showSidebar={true}>
+              <FriendsPage />
+            </Layout>
+          ) : (
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+          )}
+        />
                 
         <Route path='/call/:id' element={isAuthenticated && isOnboarded ? (
           <CallPage />
@@ -80,7 +88,6 @@ const App = () => {
           <Navigate to="/login" />
         )} />
 
-        <Route path="/friends" element={<FriendsPage />} />
       </Routes>
 
       <Toaster />
