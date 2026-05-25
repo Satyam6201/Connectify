@@ -29,10 +29,8 @@ const HomePage = () => {
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: (data, userId) => {
-    // ✅ Immediately disable the button in local state
       setOutgoingRequestsIds((prev) => new Set([...prev, userId]));
 
-    // ✅ Re-fetch from backend for consistency
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
     },
   });
