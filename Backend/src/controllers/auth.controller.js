@@ -34,8 +34,8 @@ export async function signup(req, res) {
             })
         }
 
-        const idx = Math.floor(Math.random() * 100) + 1; // Generate a num between 1-100
-        const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`
+        const randomSeed = Math.random().toString(36).substring(2, 10);
+        const randomAvatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${randomSeed}`;
 
         const newUser = await User.create({
             email,
