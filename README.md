@@ -300,6 +300,50 @@ npm run dev
 
 ---
 
+## 🚀 Production Deployment Guide
+
+### Part 1: Deploy Backend to Render
+
+1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** -> **Web Service**.
+2. Connect your GitHub repository (`Connectify`).
+3. Configure the Web Service settings:
+   - **Name**: `connectify-backend` (or your choice)
+   - **Root Directory**: `backend`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start` (or `node src/server.js`)
+   - **Plan**: Free / Starter
+4. Add the following **Environment Variables** in the Render settings:
+   - `PORT`: `5001` (or let Render assign automatically)
+   - `NODE_ENV`: `production`
+   - `MONGO_URI`: `mongodb+srv://...` (your MongoDB Atlas connection URI)
+   - `JWT_SECRET_KEY`: `your_jwt_secret_key`
+   - `STREAM_API_KEY`: `your_stream_api_key`
+   - `STREAM_API_SECRET`: `your_stream_api_secret`
+   - `CLIENT_URL`: `https://your-frontend-app.vercel.app` (your Vercel frontend URL)
+   - *(Optional)* `REDIS_URI`: Upstash or Render Redis connection URI (rate limiter falls back to in-memory if omitted)
+5. Click **Deploy Web Service**.
+6. Copy your deployed backend URL (e.g. `https://connectify-backend.onrender.com`).
+
+---
+
+### Part 2: Deploy Frontend to Vercel
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New...** -> **Project**.
+2. Import your GitHub repository (`Connectify`).
+3. In the project setup:
+   - **Root Directory**: Click "Edit" and choose `frontend`.
+   - **Framework Preset**: `Vite`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Add the following **Environment Variables** in Vercel:
+   - `VITE_STREAM_API_KEY`: `your_stream_api_key`
+   - `VITE_API_URL`: `https://connectify-backend.onrender.com` (your deployed Render backend URL)
+5. Click **Deploy**.
+6. Once deployed, copy your Vercel URL and update the `CLIENT_URL` environment variable on Render to match your Vercel URL.
+
+---
+
 ## 👨‍💻 Author
 
 - **Satyam Kumar Mishra** – [GitHub Profile](https://github.com/Satyam6201)

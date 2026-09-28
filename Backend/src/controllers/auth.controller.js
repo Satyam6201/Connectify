@@ -57,17 +57,17 @@ export async function signup(req, res) {
             console.log("Error creating Stream user:", error);
         }
 
-        // TODO: CREATE THE USER IN STREAM AS WELL 
+        const jwtSecret = process.env.JWT_SECRET_KEY || process.env.JWT_SECRET;
         const token = jwt.sign(
            { userId: newUser._id },
-           process.env.JWT_SECRET_KEY,
+           jwtSecret,
            { expiresIn: "7d" }
         )
 
         res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true, // Prevent XSS attacks 
-            sameSite: "strict", //prevent CSRF attacks
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Must be "none" for cross-origin (Render backend + Vercel frontend)
             secure: process.env.NODE_ENV === "production"
         })
 
@@ -95,30 +95,34 @@ export async function login(req, res) {
         const isPasswordCorrect = await user.matchPassword(password);
         if (!isPasswordCorrect) return res.status(401).json({ message: "Invalid email or password" });
 
-        // TODO: CREATE THE USER IN STREAM AS WELL 
+        const jwtSecret = process.env.JWT_SECRET_KEY || process.env.JWT_SECRET;
         const token = jwt.sign(
            { userId: user._id },
-           process.env.JWT_SECRET_KEY,
+           jwtSecret,
            { expiresIn: "7d" }
         );
 
         res.cookie("jwt", token, {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true, // Prevent XSS attacks 
-            sameSite: "strict", //prevent CSRF attacks
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Must be "none" for cross-origin (Render backend + Vercel frontend)
             secure: process.env.NODE_ENV === "production"
         });
 
         res.status(200).json({ success: true, user });
 
     } catch (error) {
-        console.log("Error in signup controller", error);
+        console.log("Error in login controller", error);
         res.status(500).json({ message: "Internal Server Error"});
     }
 }
 
 export function logout(req, res) {
-    res.clearCookie("jwt");
+    res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+    });
     res.status(200).json ({ success: true, message: "Logout successful" });
 }
 
