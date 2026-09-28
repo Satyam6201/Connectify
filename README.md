@@ -338,7 +338,7 @@ npm run dev
    - **Output Directory**: `dist`
 4. Add the following **Environment Variables** in Vercel:
    - `VITE_STREAM_API_KEY`: `your_stream_api_key`
-   - `VITE_API_URL`: `https://connectify-backend.onrender.com` (your deployed Render backend URL)
+   - `VITE_API_URL`: `https://connectify-6nim.onrender.com`
 5. Click **Deploy**.
 6. Once deployed, copy your Vercel URL and update the `CLIENT_URL` environment variable on Render to match your Vercel URL.
 
