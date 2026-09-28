@@ -10,21 +10,21 @@ import OnboardingPage from './pages/OnboardingPage.jsx';
 import { Toaster } from "react-hot-toast";
 import PageLoader from './components/PageLoader.jsx';
 import useAuthUser from './hooks/useAuthUser.js';
+import useRealtimeNotifications from './hooks/useRealtimeNotifications.js';
 import Layout from './components/Layout.jsx';
 import { useThemeStore } from './store/useThemeStore.js';
 import FriendCard from './components/FriendCard.jsx';
 import FriendsPage from './pages/FriendsPage.jsx';
 
 const App = () => {
-
-  // Tanstack query crash course
-  // delete => post put delete
-
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
 
+  // Listen for real-time friend requests & trigger styled notifications
+  useRealtimeNotifications();
+
   const isAuthenticated = Boolean(authUser);
-  const isOnboarded = authUser?.isOnboarded
+  const isOnboarded = authUser?.isOnboarded;
 
   if (isLoading) return <PageLoader />
 
