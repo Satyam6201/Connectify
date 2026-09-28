@@ -23,6 +23,11 @@ const friendRequestSchema = new mongoose.Schema(
   }
 );
 
+// Performance Indexes for high traffic scaling
+friendRequestSchema.index({ recipient: 1, status: 1 });
+friendRequestSchema.index({ sender: 1, status: 1 });
+friendRequestSchema.index({ sender: 1, recipient: 1 });
+
 const FriendRequest = mongoose.model("FriendRequest", friendRequestSchema);
 
 export default FriendRequest;

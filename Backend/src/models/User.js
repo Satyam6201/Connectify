@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema({
     ]
 }, {timestamps: true});
 
+// Performance Indexes for high-concurrency scaling
+userSchema.index({ isOnboarded: 1 });
+userSchema.index({ nativeLanguage: 1, learningLanguage: 1 });
+userSchema.index({ fullName: "text" });
+
 // TODO: Explain this once again
 userSchema.pre("save", async function (next) {
 

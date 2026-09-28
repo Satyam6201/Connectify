@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # Redis service for caching & rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: connectify_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Express API service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: connectify_backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - NODE_ENV=production
+      - MONGO_URI=${MONGO_URI:-mongodb+srv://satyamkmishraa_db_user:jkUL6opyT3klpOOP@cluster0.znkc4hl.mongodb.net/ConnectHub_db?retryWrites=true&w=majority&appName=Cluster0}
+      - REDIS_URI=redis://redis:6379
+      - STEAM_API_KEY=${STEAM_API_KEY:-yc564wn4by2z}
+      - STEAM_API_SECRET=${STEAM_API_SECRET:-us2hzzd4mar64n5msc4ysq9dy54gz7c3vuyxagyw9d24hpak78tgyy39d83wr2hb}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-F9yXQpQFw+6bZjztp8Z/Wwxt7WO5qX4NBmDvIQEosnU=}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # Frontend Vite React SPA service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_STREAM_API_KEY=${STEAM_API_KEY:-yc564wn4by2z}
+    container_name: connectify_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  redis_data:

@@ -1,17 +1,16 @@
 import express from "express";
-import { login, logout, onboard, signup } from "../controllers/auth.controller.js";
+import { login, logout, onboard, signup, updateProfile } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import { authLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-router.post("/signup", signup);
-router.post("/login", login);
+router.post("/signup", authLimiter, signup);
+router.post("/login", authLimiter, login);
 router.post("/logout", logout);
 
-// forget-password
-// send-reset-password-email
-
 router.post("/onboarding", protectRoute, onboard);
+router.put("/profile", protectRoute, updateProfile);
 
 // check if user is logged in 
 router.get("/me", protectRoute, (req, res) => {

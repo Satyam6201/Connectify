@@ -89,7 +89,7 @@ const ChatPage = () => {
         text: `I've started a video call. Join me here: ${callUrl}`,
       });
 
-      toast.success("Vidoe call link sent successfully!");
+      toast.success("Video call link sent successfully!");
     }
   };
 

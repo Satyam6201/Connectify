@@ -1,10 +1,13 @@
-import { BellIcon, LogOutIcon, MenuIcon, ShipWheelIcon, XIcon } from "lucide-react";
+import { BellIcon, LogOutIcon, MenuIcon, ShipWheelIcon, UserPenIcon, XIcon } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import ThemeSelector from "./ThemeSelector";
+import EditProfileModal from "./EditProfileModal";
 import useLogout from "../hooks/useLogout";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getFriendRequests } from "../lib/api";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
@@ -12,8 +15,16 @@ const Navbar = () => {
   const isChatPage = location.pathname?.startsWith("/chat");
 
   const { logoutMutation } = useLogout();
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
+  const { data: friendRequests } = useQuery({
+    queryKey: ["friendRequests"],
+    queryFn: getFriendRequests,
+    enabled: !!authUser,
+  });
+
+  const pendingCount = friendRequests?.incomingReqs?.length || 0;
 
   return (
     <>
@@ -56,24 +67,32 @@ const Navbar = () => {
             {/* DESKTOP MENU */}
             <div className="hidden md:flex items-center gap-3 ml-auto">
 
+              {/* NOTIFICATIONS */}
               <motion.div whileHover={{ scale: 1.1 }}>
                 <Link to="/notifications">
-                  <button className="btn btn-ghost btn-circle relative">
+                  <button className="btn btn-ghost btn-circle relative" title="Notifications">
                     <BellIcon className="h-6 w-6 text-base-content opacity-70" />
 
-                    {/* Notification Dot */}
-                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-error animate-ping"></span>
-                    <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span>
+                    {pendingCount > 0 && (
+                      <>
+                        <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white shadow-lg animate-pulse">
+                          {pendingCount}
+                        </span>
+                      </>
+                    )}
                   </button>
                 </Link>
               </motion.div>
 
               <ThemeSelector />
 
-              {/* USER AVATAR */}
-              <motion.div
-                whileHover={{ scale: 1.08 }}
-                className="avatar"
+              {/* EDIT PROFILE / AVATAR */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsEditProfileOpen(true)}
+                className="btn btn-ghost btn-circle relative avatar"
+                title="Edit Profile"
               >
                 <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
@@ -82,7 +101,7 @@ const Navbar = () => {
                     rel="noreferrer"
                   />
                 </div>
-              </motion.div>
+              </motion.button>
 
               {/* LOGOUT */}
               <motion.button
@@ -93,6 +112,7 @@ const Navbar = () => {
                 whileTap={{ scale: 0.9 }}
                 className="btn btn-ghost btn-circle"
                 onClick={logoutMutation}
+                title="Logout"
               >
                 <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
               </motion.button>
@@ -107,7 +127,12 @@ const Navbar = () => {
               {mobileMenuOpen ? (
                 <XIcon className="size-6" />
               ) : (
-                <MenuIcon className="size-6" />
+                <div className="relative">
+                  <MenuIcon className="size-6" />
+                  {pendingCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-error" />
+                  )}
+                </div>
               )}
             </motion.button>
           </div>
@@ -124,11 +149,15 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
             className="md:hidden fixed top-16 left-0 w-full bg-base-200/95 backdrop-blur-xl border-b border-base-300 z-40 shadow-xl"
           >
-            <div className="flex flex-col items-center py-6 gap-5">
+            <div className="flex flex-col items-center py-6 gap-4">
 
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="avatar"
+                className="avatar cursor-pointer"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsEditProfileOpen(true);
+                }}
               >
                 <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
@@ -138,17 +167,34 @@ const Navbar = () => {
                 </div>
               </motion.div>
 
-              <h2 className="font-bold text-lg">
-                {authUser?.fullName}
-              </h2>
+              <div className="text-center">
+                <h2 className="font-bold text-lg">
+                  {authUser?.fullName}
+                </h2>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setIsEditProfileOpen(true);
+                  }}
+                  className="btn btn-xs btn-outline btn-primary mt-2 rounded-xl"
+                >
+                  <UserPenIcon className="size-3 mr-1" />
+                  Edit Profile
+                </button>
+              </div>
 
-              <div className="flex items-center gap-4">
-                <Link to="/notifications">
+              <div className="flex items-center gap-4 mt-2">
+                <Link to="/notifications" onClick={() => setMobileMenuOpen(false)}>
                   <motion.button
                     whileTap={{ scale: 0.9 }}
-                    className="btn btn-primary btn-circle"
+                    className="btn btn-primary btn-circle relative"
                   >
                     <BellIcon className="size-5" />
+                    {pendingCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">
+                        {pendingCount}
+                      </span>
+                    )}
                   </motion.button>
                 </Link>
 
@@ -166,6 +212,13 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* EDIT PROFILE MODAL */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        authUser={authUser}
+      />
     </>
   );
 };

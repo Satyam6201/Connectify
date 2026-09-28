@@ -141,12 +141,16 @@ export async function onboard(req,res) {
             });
         }
 
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-            ...req.body,
-            isOnboarded: true,
-        }, {new: true})
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                ...req.body,
+                isOnboarded: true,
+            },
+            { new: true }
+        ).select("-password");
 
-        if (!updatedUser) return res.status(404).json({message: "User not found"});
+        if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
         try {
             await upsertStreamUser({
@@ -154,19 +158,47 @@ export async function onboard(req,res) {
                 name: updatedUser.fullName,
                 image: updatedUser.profilePic || "",
             });
-
-            console.log(`Stream user updated after onboarding for ${updatedUser.fullName}`);
-
-            
-            
         } catch (streamError) {
-            console.log("Error updating Stream user during onboarding:", streamError.message);
+            console.error("Error updating Stream user during onboarding:", streamError.message);
         }
-    
-        res.status(200).json({ success: true, user: updatedUser });
 
+        res.status(200).json({ success: true, user: updatedUser });
     } catch (error) {
-        console.log("Onboarding error:", error);
-        res.status(500).json({ message: "Internal Server Error" })
+        console.error("Onboarding error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+export async function updateProfile(req, res) {
+    try {
+        const userId = req.user._id;
+        const { fullName, bio, nativeLanguage, learningLanguage, location, profilePic } = req.body;
+
+        const updateData = {};
+        if (fullName !== undefined) updateData.fullName = fullName.trim();
+        if (bio !== undefined) updateData.bio = bio;
+        if (nativeLanguage !== undefined) updateData.nativeLanguage = nativeLanguage;
+        if (learningLanguage !== undefined) updateData.learningLanguage = learningLanguage;
+        if (location !== undefined) updateData.location = location;
+        if (profilePic !== undefined) updateData.profilePic = profilePic;
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select("-password");
+
+        if (!updatedUser) return res.status(404).json({ message: "User not found" });
+
+        try {
+            await upsertStreamUser({
+                id: updatedUser._id.toString(),
+                name: updatedUser.fullName,
+                image: updatedUser.profilePic || "",
+            });
+        } catch (streamError) {
+            console.error("Error updating Stream user during profile update:", streamError.message);
+        }
+
+        res.status(200).json({ success: true, user: updatedUser, message: "Profile updated successfully" });
+    } catch (error) {
+        console.error("Update profile error:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}

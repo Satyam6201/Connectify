@@ -30,13 +30,29 @@ export const completeOnboarding = async (userData) => {
     return response.data;
 }
 
+export const updateProfile = async (userData) => {
+    const response = await axiosInstance.put("/auth/profile", userData);
+    return response.data;
+}
+
 export async function getUserFriends() {
     const response = await axiosInstance.get("/users/friends");
     return response.data;
 }
 
-export async function getRecommendedUsers() {
-    const response = await axiosInstance.get("/users");
+export async function removeFriend(friendId) {
+    const response = await axiosInstance.delete(`/users/friends/${friendId}`);
+    return response.data;
+}
+
+export async function getRecommendedUsers(filters = {}) {
+    const params = new URLSearchParams();
+    if (filters.search) params.append("search", filters.search);
+    if (filters.nativeLanguage) params.append("nativeLanguage", filters.nativeLanguage);
+    if (filters.learningLanguage) params.append("learningLanguage", filters.learningLanguage);
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    const response = await axiosInstance.get(`/users${queryString}`);
     return response.data;
 }
 
@@ -57,6 +73,16 @@ export async function getFriendRequests() {
 
 export async function acceptFriendRequest(requestId) {
     const response = await axiosInstance.put(`/users/friend-request/${requestId}/accept`);
+    return response.data;
+}
+
+export async function rejectFriendRequest(requestId) {
+    const response = await axiosInstance.delete(`/users/friend-request/${requestId}/reject`);
+    return response.data;
+}
+
+export async function cancelFriendRequest(requestId) {
+    const response = await axiosInstance.delete(`/users/friend-request/${requestId}/cancel`);
     return response.data;
 }
 

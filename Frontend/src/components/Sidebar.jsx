@@ -8,11 +8,21 @@ import {
 import useAuthUser from "../hooks/useAuthUser";
 import { Link, useLocation } from "react-router";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { getFriendRequests } from "../lib/api";
 
 const Sidebar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const { data: friendRequests } = useQuery({
+    queryKey: ["friendRequests"],
+    queryFn: getFriendRequests,
+    enabled: !!authUser,
+  });
+
+  const pendingCount = friendRequests?.incomingReqs?.length || 0;
 
   const navItems = [
     {
@@ -29,6 +39,7 @@ const Sidebar = () => {
       path: "/notifications",
       label: "Notifications",
       icon: BellIcon,
+      badge: pendingCount > 0 ? pendingCount : null,
     },
   ];
 
@@ -107,11 +118,17 @@ const Sidebar = () => {
                     />
                   )}
 
-                  <motion.div whileHover={{ rotate: 8, scale: 1.1 }}>
+                  <motion.div whileHover={{ rotate: 8, scale: 1.1 }} className="relative">
                     <Icon className="size-5 text-base-content opacity-80 relative z-10" />
                   </motion.div>
 
-                  <span className="relative z-10">{item.label}</span>
+                  <span className="relative z-10 flex-1 text-left">{item.label}</span>
+
+                  {item.badge && (
+                    <span className="relative z-10 badge badge-error badge-sm text-white font-bold animate-pulse">
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               </motion.div>
             );
@@ -202,7 +219,7 @@ const Sidebar = () => {
                   <motion.div
                     whileTap={{ scale: 0.9 }}
                     whileHover={{ y: -3 }}
-                    className={`p-3 rounded-2xl transition-all duration-300
+                    className={`p-3 rounded-2xl transition-all duration-300 relative
                     ${
                       isActive
                         ? "bg-primary text-primary-content shadow-lg"
@@ -210,6 +227,11 @@ const Sidebar = () => {
                     }`}
                   >
                     <Icon className="size-5" />
+                    {item.badge && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-bold text-white shadow-sm">
+                        {item.badge}
+                      </span>
+                    )}
                   </motion.div>
 
                   <span className="text-[10px] mt-1">
