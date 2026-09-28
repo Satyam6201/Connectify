@@ -320,10 +320,10 @@ npm run dev
    - `JWT_SECRET_KEY`: `your_jwt_secret_key`
    - `STREAM_API_KEY`: `your_stream_api_key`
    - `STREAM_API_SECRET`: `your_stream_api_secret`
-   - `CLIENT_URL`: `https://your-frontend-app.vercel.app` (your Vercel frontend URL)
+   - `CLIENT_URL`: `https://connectify-videocall.vercel.app`
    - *(Optional)* `REDIS_URI`: Upstash or Render Redis connection URI (rate limiter falls back to in-memory if omitted)
 5. Click **Deploy Web Service**.
-6. Copy your deployed backend URL (e.g. `https://connectify-backend.onrender.com`).
+6. Deployed Backend URL: `https://connectify-6nim.onrender.com`.
 
 ---
 
