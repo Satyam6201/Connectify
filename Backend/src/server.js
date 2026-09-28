@@ -102,6 +102,13 @@ if (fs.existsSync(distPath)) {
             message: "Connectify API is running successfully on Render."
         });
     });
+
+    app.use("*", (req, res) => {
+        res.status(404).json({
+            error: "Not Found",
+            message: `Route ${req.originalUrl} not found on this API server.`
+        });
+    });
 }
 
 app.listen(PORT, () => {
