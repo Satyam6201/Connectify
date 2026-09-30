@@ -16,6 +16,8 @@
     <img src="https://img.shields.io/badge/RealTime-Stream%20SDK-005fff?style=for-the-badge" alt="Stream" />
     <img src="https://img.shields.io/badge/Security-Redis%20Rate%20Limit-red?style=for-the-badge" alt="RateLimit" />
     <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+    <a href="https://connectify-videocall.vercel.app" target="_blank"><img src="https://img.shields.io/badge/🔴 Live-Demo-green?style=for-the-badge" /></a>
+    <a href="https://github.com/Satyam6201/Connectify" target="_blank"><img src="https://img.shields.io/badge/💻 Source-Code-blue?style=for-the-badge" /></a>
   </p>
 </div>
 
