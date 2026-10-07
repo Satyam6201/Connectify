@@ -18,12 +18,9 @@ const friendRequestSchema = new mongoose.Schema(
       default: "pending",
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// Performance Indexes for high traffic scaling
 friendRequestSchema.index({ recipient: 1, status: 1 });
 friendRequestSchema.index({ sender: 1, status: 1 });
 friendRequestSchema.index({ sender: 1, recipient: 1 });
