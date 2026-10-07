@@ -6,9 +6,8 @@ Single Page Application (SPA) built with React 19, Vite, Tailwind CSS, DaisyUI, 
 
 ## Features
 
-- **Recruiter Demo Mode**: Instant 1-click login for Demo User 1 (Alex - English/Spanish) and Demo User 2 (Elena - Spanish/English) to test chat and video calls side-by-side.
-- **AI Language Assistant Drawer**: Built-in slide-in drawer in chat with Google Gemini AI for instant message translation and grammar coaching with natural tone rewrites.
-- **AI Language Partner Bot**: Dedicated interactive practice page (`/ai-partner`) with roleplay scenarios (Ordering Food, Job Interview, Casual Meetup), instant feedback, and Text-to-Speech (TTS) pronunciation.
+- **Meta AI Assistant & Image Creator**: Dedicated full-page AI experience (`/meta-ai`) like Meta AI in WhatsApp—answers questions, explains concepts, writes code, and generates instant high-resolution AI art via `/imagine <prompt>` or the style selector.
+- **In-Chat AI Assistant Drawer**: Slide-in drawer inside 1-on-1 chat for instant Meta AI queries, image generation insertion, grammar coaching, and real-time translation.
 - **Real-Time 1-on-1 Chat**: Powered by Stream Chat React SDK with unread counters, active states, and custom styling.
 - **1-on-1 HD Video Calling**: Powered by Stream Video React SDK with camera, microphone, and call state management.
 - **State Management & Data Fetching**: TanStack React Query v5 for cached server state and Zustand for client theme state.

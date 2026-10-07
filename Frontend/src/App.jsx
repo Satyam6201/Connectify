@@ -7,7 +7,7 @@ import CallPage from "./pages/CallPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import OnboardingPage from "./pages/OnboardingPage.jsx";
 import FriendsPage from "./pages/FriendsPage.jsx";
-import AIPartnerPage from "./pages/AIPartnerPage.jsx";
+import MetaAIPage from "./pages/MetaAIPage.jsx";
 
 import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader.jsx";
@@ -44,16 +44,21 @@ const App = () => {
         />
 
         <Route
-          path="/ai-partner"
+          path="/meta-ai"
           element={
             isAuthenticated && isOnboarded ? (
               <Layout showSidebar={true}>
-                <AIPartnerPage />
+                <MetaAIPage />
               </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
           }
+        />
+
+        <Route
+          path="/ai-partner"
+          element={<Navigate to="/meta-ai" replace />}
         />
 
         <Route

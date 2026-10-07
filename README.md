@@ -16,7 +16,7 @@ Real-Time Language Exchange, 1-on-1 Chat, HD Video Calls, and Gemini AI Language
 
 ## Overview
 
-Connectify is a high-performance web platform designed to connect language learners worldwide. Users can discover language exchange partners, manage friend requests, chat in real time, launch HD video calls, practice with an always-online Gemini AI Language Partner, check message grammar, translate text instantly, and customize their interface with 32 theme presets.
+Connectify is a high-performance web platform designed to connect language learners worldwide. Users can discover language exchange partners, manage friend requests, chat in real time, launch HD video calls, get instant help and generate images with Meta AI, check message grammar, translate text instantly, and customize their interface with 32 theme presets.
 
 The application is built for scalability and low latency, featuring Redis caching, distributed sliding-window rate limiting, MongoDB indexing, Gzip compression, Vite vendor code-splitting, and Docker containerization.
 
@@ -28,11 +28,13 @@ The application is built for scalability and low latency, featuring Redis cachin
 - **1-Click Demo Login**: Instantly log in as Demo User 1 (*Alex - Native English, Learning Spanish*) or Demo User 2 (*Elena - Native Spanish, Learning English*) right from the login screen.
 - Pre-configured friendships and synchronized Stream Chat credentials allow interviewers and recruiters to test real-time chat, HD video calling, and toast alerts side-by-side across two browser windows in seconds.
 
-### AI-Powered Language Assistance (Google Gemini AI)
+### Meta AI Assistant & AI Image Generation
+- **Ask Anything & Chat Assistant**: Versatile conversational AI (works like Meta AI in WhatsApp) providing answers to general knowledge questions, language learning, programming solutions, and writing assistance.
+- **Instant AI Image Generation**: Generate stunning, high-resolution artwork and graphics by typing `/imagine <prompt>` or selecting the dedicated Image Mode with customizable art styles (Cinematic, Anime, Cyberpunk, 3D Render, Oil Painting, Photorealistic).
+- **Interactive Fullscreen & Download**: View generated images in HD modal preview and download with one click.
 - **Real-Time Message Translation**: Translate any text or incoming message into your native or target language.
 - **AI Grammar and Tone Coach**: Instant grammar checking with corrections, explanations, and natural phrasing suggestions before sending.
-- **AI Practice Partner (Bot)**: An always-available conversational partner for immersive language practice across custom scenarios (Casual Chat, Restaurant, Travel, Job Interview).
-- **Text-to-Speech Pronunciation**: Listen to native pronunciation directly inside the practice chat.
+- **Text-to-Speech Pronunciation**: Listen to natural speech synthesis directly from AI answers.
 
 ### Authentication and Security
 - Secure session management using JSON Web Tokens (JWT) stored in HTTP-Only cookies.
@@ -123,12 +125,12 @@ Connectify/
 │   │   │   ├── notificationToast.jsx
 │   │   │   └── utils.js
 │   │   ├── pages/
-│   │   │   ├── AIPartnerPage.jsx
 │   │   │   ├── CallPage.jsx
 │   │   │   ├── ChatPage.jsx
 │   │   │   ├── FriendsPage.jsx
 │   │   │   ├── HomePage.jsx
 │   │   │   ├── LoginPage.jsx
+│   │   │   ├── MetaAIPage.jsx
 │   │   │   ├── NotificationsPage.jsx
 │   │   │   ├── OnboardingPage.jsx
 │   │   │   └── SignUpPage.jsx
@@ -154,7 +156,7 @@ Connectify/
 | **Frontend** | React 19, Vite, Tailwind CSS, DaisyUI, Framer Motion, React Icons |
 | **State & Data Fetching** | TanStack React Query v5, Zustand, Axios |
 | **Real-Time Communication** | Stream Chat React SDK, Stream Video React SDK |
-| **AI Engine** | Google Generative AI (Gemini 3.5 / Flash) |
+| **AI Engine** | Google Generative AI (Gemini 3.5 / Flash) & Pollinations.ai Image Engine |
 | **Backend & Runtime** | Node.js, Express.js (ES Modules), Gzip Compression, Cookie-Parser, CORS |
 | **Database & Caching** | MongoDB (Mongoose), Redis 7 (ioredis) |
 | **Security & Rate Limiting** | JWT, Bcrypt.js, Redis Sliding Window Rate Limiter |
@@ -175,12 +177,13 @@ Connectify/
 | `PUT` | `/api/auth/profile` | Update profile bio, location, languages, avatar |
 | `GET` | `/api/auth/me` | Fetch current authenticated user |
 
-### AI Assistance Routes (`/api/ai`)
+### AI Assistance & Image Generation Routes (`/api/ai`)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
+| `POST` | `/api/ai/chat` | Chat with Meta AI assistant / Q&A / `/imagine` parsing |
+| `POST` | `/api/ai/generate-image` | Generate AI image from prompt with customizable styles |
 | `POST` | `/api/ai/translate` | Translate text into target language using Gemini AI |
 | `POST` | `/api/ai/grammar-check` | Analyze sentence grammar, tone, and suggest alternatives |
-| `POST` | `/api/ai/partner-chat` | Chat with Gemini AI Language Practice Partner |
 
 ### User and Friendship Routes (`/api/users`)
 | Method | Endpoint | Description |

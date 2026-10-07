@@ -25,8 +25,8 @@ const Sidebar = () => {
       icon: FiHome,
     },
     {
-      path: "/ai-partner",
-      label: "AI Practice Partner",
+      path: "/meta-ai",
+      label: "Meta AI & Image Gen",
       icon: IoSparklesOutline,
       highlight: true,
     },
@@ -122,7 +122,7 @@ const Sidebar = () => {
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] mt-0.5">{item.label.replace("AI Practice Partner", "AI Bot")}</span>
+                  <span className="text-[10px] mt-0.5">{item.label.replace(" & Image Gen", "")}</span>
                 </Link>
               );
             })}

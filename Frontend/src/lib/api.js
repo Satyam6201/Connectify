@@ -105,7 +105,12 @@ export async function checkGrammar(text, learningLanguage) {
   return response.data;
 }
 
-export async function sendAIPartnerMessage(data) {
-  const response = await axiosInstance.post("/ai/partner-chat", data);
+export async function chatWithAI(data) {
+  const response = await axiosInstance.post("/ai/chat", data);
+  return response.data;
+}
+
+export async function generateAIImage(data) {
+  const response = await axiosInstance.post("/ai/generate-image", data);
   return response.data;
 }
