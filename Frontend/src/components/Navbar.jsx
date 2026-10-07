@@ -1,10 +1,9 @@
-import { BellIcon, LogOutIcon, MenuIcon, ShipWheelIcon, UserPenIcon, XIcon } from "lucide-react";
+import { FiBell, FiEdit3, FiGlobe, FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import ThemeSelector from "./ThemeSelector";
 import EditProfileModal from "./EditProfileModal";
 import useLogout from "../hooks/useLogout";
-import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getFriendRequests } from "../lib/api";
@@ -28,192 +27,123 @@ const Navbar = () => {
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-base-200/80 backdrop-blur-xl border-b border-base-300 sticky top-0 z-50 h-16 flex items-center shadow-sm"
-      >
+      <nav className="bg-base-200/80 backdrop-blur-xl border-b border-base-300 sticky top-0 z-50 h-16 flex items-center shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="flex items-center justify-between w-full">
+            <Link to="/" className="flex items-center gap-2.5">
+              <FiGlobe className="size-7 text-primary" />
+              <span
+                className={`text-2xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider ${
+                  !isChatPage ? "block" : "hidden sm:block"
+                }`}
+              >
+                Connectify
+              </span>
+            </Link>
 
-            {/* LOGO */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="flex items-center"
-            >
-              <Link to="/" className="flex items-center gap-2.5">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 8,
-                    ease: "linear",
-                  }}
-                >
-                  <ShipWheelIcon className="size-8 text-primary" />
-                </motion.div>
-
-                <span
-                  className={`text-2xl sm:text-3xl font-bold font-mono bg-clip-text text-transparent
-                  bg-gradient-to-r from-primary to-secondary tracking-wider
-                  ${!isChatPage ? "block" : "hidden sm:block"}`}
-                >
-                  Connectify
-                </span>
+            <div className="hidden md:flex items-center gap-2.5 ml-auto">
+              <Link to="/notifications">
+                <button className="btn btn-ghost btn-circle relative" title="Notifications">
+                  <FiBell className="size-5 text-base-content opacity-75" />
+                  {pendingCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">
+                      {pendingCount}
+                    </span>
+                  )}
+                </button>
               </Link>
-            </motion.div>
-
-            {/* DESKTOP MENU */}
-            <div className="hidden md:flex items-center gap-3 ml-auto">
-
-              {/* NOTIFICATIONS */}
-              <motion.div whileHover={{ scale: 1.1 }}>
-                <Link to="/notifications">
-                  <button className="btn btn-ghost btn-circle relative" title="Notifications">
-                    <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-
-                    {pendingCount > 0 && (
-                      <>
-                        <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white shadow-lg animate-pulse">
-                          {pendingCount}
-                        </span>
-                      </>
-                    )}
-                  </button>
-                </Link>
-              </motion.div>
 
               <ThemeSelector />
 
-              {/* EDIT PROFILE / AVATAR */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() => setIsEditProfileOpen(true)}
-                className="btn btn-ghost btn-circle relative avatar"
+                className="btn btn-ghost btn-circle avatar"
                 title="Edit Profile"
               >
-                <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img
-                    src={authUser?.profilePic}
-                    alt="User Avatar"
-                    rel="noreferrer"
-                  />
+                <div className="w-9 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-1">
+                  <img src={authUser?.profilePic} alt="User Avatar" />
                 </div>
-              </motion.button>
+              </button>
 
-              {/* LOGOUT */}
-              <motion.button
-                whileHover={{
-                  scale: 1.08,
-                  rotate: 10,
-                }}
-                whileTap={{ scale: 0.9 }}
-                className="btn btn-ghost btn-circle"
+              <button
+                className="btn btn-ghost btn-circle text-error/80 hover:text-error"
                 onClick={logoutMutation}
                 title="Logout"
               >
-                <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
-              </motion.button>
+                <FiLogOut className="size-5" />
+              </button>
             </div>
 
-            {/* MOBILE MENU BUTTON */}
-            <motion.button
-              whileTap={{ scale: 0.9 }}
+            <button
               className="md:hidden btn btn-ghost btn-circle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
-                <XIcon className="size-6" />
+                <FiX className="size-5" />
               ) : (
                 <div className="relative">
-                  <MenuIcon className="size-6" />
+                  <FiMenu className="size-5" />
                   {pendingCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-error" />
                   )}
                 </div>
               )}
-            </motion.button>
+            </button>
           </div>
         </div>
-      </motion.nav>
+      </nav>
 
-      {/* MOBILE MENU */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden fixed top-16 left-0 w-full bg-base-200/95 backdrop-blur-xl border-b border-base-300 z-40 shadow-xl"
-          >
-            <div className="flex flex-col items-center py-6 gap-4">
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed top-16 left-0 w-full bg-base-200/95 backdrop-blur-xl border-b border-base-300 z-40 shadow-xl transition-all">
+          <div className="flex flex-col items-center py-5 gap-3">
+            <div
+              className="avatar cursor-pointer"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setIsEditProfileOpen(true);
+              }}
+            >
+              <div className="w-16 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-2">
+                <img src={authUser?.profilePic} alt="Avatar" />
+              </div>
+            </div>
 
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="avatar cursor-pointer"
+            <div className="text-center">
+              <h2 className="font-bold text-base">{authUser?.fullName}</h2>
+              <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setIsEditProfileOpen(true);
                 }}
+                className="btn btn-xs btn-outline btn-primary mt-2 rounded-lg gap-1"
               >
-                <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img
-                    src={authUser?.profilePic}
-                    alt="User Avatar"
-                  />
-                </div>
-              </motion.div>
-
-              <div className="text-center">
-                <h2 className="font-bold text-lg">
-                  {authUser?.fullName}
-                </h2>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setIsEditProfileOpen(true);
-                  }}
-                  className="btn btn-xs btn-outline btn-primary mt-2 rounded-xl"
-                >
-                  <UserPenIcon className="size-3 mr-1" />
-                  Edit Profile
-                </button>
-              </div>
-
-              <div className="flex items-center gap-4 mt-2">
-                <Link to="/notifications" onClick={() => setMobileMenuOpen(false)}>
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    className="btn btn-primary btn-circle relative"
-                  >
-                    <BellIcon className="size-5" />
-                    {pendingCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">
-                        {pendingCount}
-                      </span>
-                    )}
-                  </motion.button>
-                </Link>
-
-                <ThemeSelector />
-
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  className="btn btn-error btn-circle"
-                  onClick={logoutMutation}
-                >
-                  <LogOutIcon className="size-5" />
-                </motion.button>
-              </div>
+                <FiEdit3 className="size-3" />
+                Edit Profile
+              </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* EDIT PROFILE MODAL */}
+            <div className="flex items-center gap-3 mt-2">
+              <Link to="/notifications" onClick={() => setMobileMenuOpen(false)}>
+                <button className="btn btn-primary btn-sm btn-circle relative">
+                  <FiBell className="size-4" />
+                  {pendingCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-bold text-white">
+                      {pendingCount}
+                    </span>
+                  )}
+                </button>
+              </Link>
+
+              <ThemeSelector />
+
+              <button className="btn btn-error btn-sm btn-circle" onClick={logoutMutation}>
+                <FiLogOut className="size-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <EditProfileModal
         isOpen={isEditProfileOpen}
         onClose={() => setIsEditProfileOpen(false)}

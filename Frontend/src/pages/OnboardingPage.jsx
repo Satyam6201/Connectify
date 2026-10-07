@@ -2,16 +2,9 @@ import { useState } from "react";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import {
-  CameraIcon,
-  LoaderIcon,
-  MapPinIcon,
-  ShipWheelIcon,
-  ShuffleIcon,
-} from "lucide-react";
+import { FiCamera, FiGlobe, FiLoader, FiMapPin, FiRefreshCw } from "react-icons/fi";
 import { completeOnboarding } from "../lib/api";
 import { LANGUAGES } from "../constants";
-import { motion } from "framer-motion";
 
 const OnboardingPage = () => {
   const { authUser } = useAuthUser();
@@ -29,12 +22,11 @@ const OnboardingPage = () => {
   const { mutate: onboardingMutation, isPending } = useMutation({
     mutationFn: completeOnboarding,
     onSuccess: () => {
-      toast.success("Profile Onboarded successfully");
+      toast.success("Profile setup completed");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
-
     onError: (error) => {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to complete setup");
     },
   });
 
@@ -45,103 +37,53 @@ const OnboardingPage = () => {
 
   const handleRandomAvatar = () => {
     const randomSeed = Math.random().toString(36).substring(2, 10);
-        const randomAvatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${randomSeed}`;
-
+    const randomAvatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${randomSeed}`;
     setFormState({ ...formState, profilePic: randomAvatar });
-    toast.success("Random profile picture generated!");
+    toast.success("Random avatar generated");
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-base-100 flex items-center justify-center px-4 py-10">
-
-      <div className="absolute top-0 left-0 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-pulse" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 40, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 card bg-base-200/80 backdrop-blur-xl w-full max-w-4xl shadow-2xl border border-base-300"
-      >
-        <div className="card-body p-5 sm:p-8 md:p-10">
-
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-center mb-8"
-          >
-            <h1 className="text-3xl sm:text-4xl font-black">
-              Complete Your Profile
-            </h1>
-
-            <p className="opacity-70 mt-3 text-sm sm:text-base">
-              Customize your profile and start connecting with people.
+    <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 sm:p-6 lg:p-10">
+      <div className="card bg-base-200/90 border border-base-300 w-full max-w-3xl shadow-xl rounded-2xl">
+        <div className="card-body p-6 sm:p-8">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold">Complete Your Profile</h1>
+            <p className="opacity-70 mt-1 text-xs sm:text-sm">
+              Set up your language preferences to find the best partners.
             </p>
-          </motion.div>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex flex-col items-center justify-center">
+              <div className="size-28 sm:size-32 rounded-full bg-base-300 overflow-hidden border-2 border-primary shadow-lg relative">
+                {formState.profilePic ? (
+                  <img
+                    src={formState.profilePic}
+                    alt="Profile Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <FiCamera className="size-10 text-base-content opacity-40" />
+                  </div>
+                )}
+              </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col items-center justify-center"
-            >
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="relative"
-              >
-                <div className="size-32 sm:size-36 rounded-full bg-base-300 overflow-hidden border-4 border-primary shadow-2xl">
-                  {formState.profilePic ? (
-                    <img
-                      src={formState.profilePic}
-                      alt="Profile Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <CameraIcon className="size-14 text-base-content opacity-40" />
-                    </div>
-                  )}
-                </div>
-
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 15,
-                    ease: "linear",
-                  }}
-                  className="absolute inset-0 rounded-full border-2 border-dashed border-primary/40"
-                />
-              </motion.div>
-
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                whileHover={{ scale: 1.05 }}
+              <button
                 type="button"
                 onClick={handleRandomAvatar}
-                className="btn btn-accent mt-6 rounded-full px-6"
+                className="btn btn-outline btn-primary btn-xs mt-3 rounded-lg gap-1.5"
               >
-                <ShuffleIcon className="size-4 mr-2" />
-                Generate Random Avatar
-              </motion.button>
-            </motion.div>
+                <FiRefreshCw className="size-3" />
+                Randomize Avatar
+              </button>
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="form-control"
-              >
-                <label className="label">
-                  <span className="label-text font-medium">Full Name</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="form-control">
+                <label className="label py-1">
+                  <span className="label-text font-medium text-xs">Full Name</span>
                 </label>
-
                 <input
                   type="text"
                   name="fullName"
@@ -152,24 +94,18 @@ const OnboardingPage = () => {
                       fullName: e.target.value,
                     })
                   }
-                  className="input input-bordered w-full h-12 focus:scale-[1.02] transition-transform"
+                  className="input input-bordered w-full h-11 rounded-xl text-sm"
                   placeholder="Your full name"
+                  required
                 />
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="form-control"
-              >
-                <label className="label">
-                  <span className="label-text font-medium">Location</span>
+              <div className="form-control">
+                <label className="label py-1">
+                  <span className="label-text font-medium text-xs">Location</span>
                 </label>
-
                 <div className="relative">
-                  <MapPinIcon className="absolute top-1/2 -translate-y-1/2 left-3 size-5 opacity-60" />
-
+                  <FiMapPin className="absolute top-1/2 -translate-y-1/2 left-3 size-4 opacity-50" />
                   <input
                     type="text"
                     name="location"
@@ -180,23 +116,18 @@ const OnboardingPage = () => {
                         location: e.target.value,
                       })
                     }
-                    className="input input-bordered w-full pl-10 h-12 focus:scale-[1.02] transition-transform"
+                    className="input input-bordered w-full pl-9 h-11 rounded-xl text-sm"
                     placeholder="City, Country"
+                    required
                   />
                 </div>
-              </motion.div>
+              </div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="form-control"
-            >
-              <label className="label">
-                <span className="label-text font-medium">Bio</span>
+            <div className="form-control">
+              <label className="label py-1">
+                <span className="label-text font-medium text-xs">Bio & Goals</span>
               </label>
-
               <textarea
                 name="bio"
                 value={formState.bio}
@@ -206,25 +137,17 @@ const OnboardingPage = () => {
                     bio: e.target.value,
                   })
                 }
-                className="textarea textarea-bordered h-28 resize-none focus:scale-[1.01] transition-transform"
-                placeholder="Tell others about yourself and your language learning goals"
+                className="textarea textarea-bordered h-24 rounded-xl text-sm resize-none"
+                placeholder="Describe your language learning goals and interests..."
+                required
               />
-            </motion.div>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              <motion.div
-                initial={{ opacity: 0, x: -40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
-                className="form-control"
-              >
-                <label className="label">
-                  <span className="label-text font-medium">
-                    Native Language
-                  </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="form-control">
+                <label className="label py-1">
+                  <span className="label-text font-medium text-xs">Native Language</span>
                 </label>
-
                 <select
                   name="nativeLanguage"
                   value={formState.nativeLanguage}
@@ -234,33 +157,22 @@ const OnboardingPage = () => {
                       nativeLanguage: e.target.value,
                     })
                   }
-                  className="select select-bordered h-12"
+                  className="select select-bordered h-11 rounded-xl text-sm"
+                  required
                 >
-                  <option value="">Select your native language</option>
-
+                  <option value="">Select native language</option>
                   {LANGUAGES.map((lang) => (
-                    <option
-                      value={lang.toLowerCase()}
-                      key={`native-${lang}`}
-                    >
+                    <option value={lang.toLowerCase()} key={`native-${lang}`}>
                       {lang}
                     </option>
                   ))}
                 </select>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 }}
-                className="form-control"
-              >
-                <label className="label">
-                  <span className="label-text font-medium">
-                    Learning Language
-                  </span>
+              <div className="form-control">
+                <label className="label py-1">
+                  <span className="label-text font-medium text-xs">Learning Language</span>
                 </label>
-
                 <select
                   name="learningLanguage"
                   value={formState.learningLanguage}
@@ -270,50 +182,39 @@ const OnboardingPage = () => {
                       learningLanguage: e.target.value,
                     })
                   }
-                  className="select select-bordered h-12"
+                  className="select select-bordered h-11 rounded-xl text-sm"
+                  required
                 >
-                  <option value="">
-                    Select language you're learning
-                  </option>
-
+                  <option value="">Select target language</option>
                   {LANGUAGES.map((lang) => (
-                    <option
-                      value={lang.toLowerCase()}
-                      key={`learning-${lang}`}
-                    >
+                    <option value={lang.toLowerCase()} key={`learning-${lang}`}>
                       {lang}
                     </option>
                   ))}
                 </select>
-              </motion.div>
+              </div>
             </div>
 
-            <motion.button
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0px 0px 30px rgba(0,255,255,0.3)",
-              }}
-              whileTap={{ scale: 0.97 }}
+            <button
               disabled={isPending}
               type="submit"
-              className="btn btn-primary w-full h-14 text-base rounded-2xl"
+              className="btn btn-primary w-full h-12 text-sm font-semibold rounded-xl"
             >
               {!isPending ? (
                 <>
-                  <ShipWheelIcon className="size-5 mr-2" />
-                  Complete Onboarding
+                  <FiGlobe className="size-4 mr-1.5" />
+                  Save and Continue
                 </>
               ) : (
                 <>
-                  <LoaderIcon className="animate-spin size-5 mr-2" />
-                  Onboarding...
+                  <FiLoader className="animate-spin size-4 mr-1.5" />
+                  Saving...
                 </>
               )}
-            </motion.button>
-
+            </button>
           </form>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

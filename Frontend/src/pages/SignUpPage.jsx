@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { ShipWheelIcon } from "lucide-react";
+import { FiGlobe } from "react-icons/fi";
 import { Link } from "react-router";
-import { motion } from "framer-motion";
 import useSignup from "../hooks/useSignup";
 
 const SignUpPage = () => {
@@ -20,115 +19,40 @@ const SignUpPage = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-10 overflow-hidden relative bg-base-100"
+      className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-base-100"
       data-theme="forest"
     >
-      {/* Animated Background */}
-      <motion.div
-        animate={{
-          x: [0, 40, 0],
-          y: [0, -30, 0],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 8,
-        }}
-        className="absolute top-0 left-0 w-72 h-72 bg-primary/20 rounded-full blur-3xl"
-      />
-
-      <motion.div
-        animate={{
-          x: [0, -40, 0],
-          y: [0, 30, 0],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 8,
-        }}
-        className="absolute bottom-0 right-0 w-72 h-72 bg-secondary/20 rounded-full blur-3xl"
-      />
-
-      {/* MAIN CONTAINER */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 40 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{
-          duration: 0.7,
-          type: "spring",
-        }}
-        className="relative z-10 border border-primary/20 flex flex-col lg:flex-row w-full 
-        max-w-6xl bg-base-100/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden"
-      >
-        {/* LEFT SIDE */}
-        <motion.div
-          initial={{ x: -40, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="w-full lg:w-1/2 p-5 sm:p-8 lg:p-10 flex flex-col justify-center"
-        >
-          {/* LOGO */}
-          <motion.div
-            whileHover={{ scale: 1.03 }}
-            className="mb-6 flex items-center gap-3"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{
-                repeat: Infinity,
-                duration: 12,
-                ease: "linear",
-              }}
-            >
-              <ShipWheelIcon className="size-10 text-primary" />
-            </motion.div>
-
-            <span
-              className="text-3xl sm:text-4xl font-black font-mono bg-clip-text text-transparent
-              bg-gradient-to-r from-primary to-secondary tracking-wider"
-            >
+      <div className="border border-primary/20 flex flex-col lg:flex-row w-full max-w-5xl bg-base-100/90 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
+          <div className="mb-6 flex items-center gap-2.5">
+            <FiGlobe className="size-8 text-primary" />
+            <span className="text-2xl sm:text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               Connectify
             </span>
-          </motion.div>
+          </div>
 
-          {/* ERROR */}
           {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="alert alert-error mb-5"
-            >
-              <span>{error.response?.data?.message}</span>
-            </motion.div>
+            <div className="alert alert-error mb-4 rounded-xl py-2 px-3 text-xs">
+              <span>{error.response?.data?.message || "Registration failed"}</span>
+            </div>
           )}
 
-          {/* FORM */}
-          <form onSubmit={handleSignup} className="space-y-5">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <h2 className="text-2xl sm:text-3xl font-bold">
-                Create an Account
-              </h2>
-
-              <p className="text-sm sm:text-base opacity-70 mt-2">
-                Join Connectify and start your language learning journey.
+          <form onSubmit={handleSignup} className="space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold">Create Account</h2>
+              <p className="text-xs sm:text-sm opacity-70 mt-1">
+                Join Connectify to start practicing languages with learners worldwide.
               </p>
-            </motion.div>
+            </div>
 
-            {/* FULL NAME */}
-            <motion.div
-              whileFocus={{ scale: 1.01 }}
-              className="form-control"
-            >
-              <label className="label">
-                <span className="label-text font-medium">Full Name</span>
+            <div className="form-control space-y-1">
+              <label className="label py-1">
+                <span className="label-text font-medium text-xs">Full Name</span>
               </label>
-
               <input
                 type="text"
                 placeholder="John Doe"
-                className="input input-bordered h-12 w-full rounded-xl focus:outline-none focus:border-primary transition-all"
+                className="input input-bordered h-11 w-full rounded-xl text-sm"
                 value={signupData.fullName}
                 onChange={(e) =>
                   setSignupData({
@@ -138,21 +62,16 @@ const SignUpPage = () => {
                 }
                 required
               />
-            </motion.div>
+            </div>
 
-            {/* EMAIL */}
-            <motion.div
-              whileFocus={{ scale: 1.01 }}
-              className="form-control"
-            >
-              <label className="label">
-                <span className="label-text font-medium">Email</span>
+            <div className="form-control space-y-1">
+              <label className="label py-1">
+                <span className="label-text font-medium text-xs">Email</span>
               </label>
-
               <input
                 type="email"
-                placeholder="john@gmail.com"
-                className="input input-bordered h-12 w-full rounded-xl focus:outline-none focus:border-primary transition-all"
+                placeholder="john@example.com"
+                className="input input-bordered h-11 w-full rounded-xl text-sm"
                 value={signupData.email}
                 onChange={(e) =>
                   setSignupData({
@@ -162,21 +81,16 @@ const SignUpPage = () => {
                 }
                 required
               />
-            </motion.div>
+            </div>
 
-            {/* PASSWORD */}
-            <motion.div
-              whileFocus={{ scale: 1.01 }}
-              className="form-control"
-            >
-              <label className="label">
-                <span className="label-text font-medium">Password</span>
+            <div className="form-control space-y-1">
+              <label className="label py-1">
+                <span className="label-text font-medium text-xs">Password</span>
               </label>
-
               <input
                 type="password"
                 placeholder="******"
-                className="input input-bordered h-12 w-full rounded-xl focus:outline-none focus:border-primary transition-all"
+                className="input input-bordered h-11 w-full rounded-xl text-sm"
                 value={signupData.password}
                 onChange={(e) =>
                   setSignupData({
@@ -186,124 +100,64 @@ const SignUpPage = () => {
                 }
                 required
               />
+              <p className="text-[11px] opacity-60">At least 6 characters</p>
+            </div>
 
-              <p className="text-xs opacity-70 mt-2">
-                Password must be at least 6 characters long
-              </p>
-            </motion.div>
-
-            {/* CHECKBOX */}
-            <motion.div
-              whileHover={{ x: 3 }}
-              className="form-control"
-            >
-              <label className="label cursor-pointer justify-start gap-3">
+            <div className="form-control">
+              <label className="label cursor-pointer justify-start gap-2.5 py-1">
                 <input
                   type="checkbox"
-                  className="checkbox checkbox-primary checkbox-sm"
+                  className="checkbox checkbox-primary checkbox-xs rounded"
                   required
                 />
-
-                <span className="text-xs sm:text-sm leading-relaxed">
-                  I agree to the{" "}
-                  <span className="text-primary hover:underline cursor-pointer">
-                    terms of service
-                  </span>{" "}
-                  and{" "}
-                  <span className="text-primary hover:underline cursor-pointer">
-                    privacy policy
-                  </span>
+                <span className="text-xs">
+                  I agree to the terms of service and privacy policy
                 </span>
               </label>
-            </motion.div>
+            </div>
 
-            {/* BUTTON */}
-            <motion.button
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0px 0px 20px rgba(0,255,150,0.3)",
-              }}
-              whileTap={{ scale: 0.97 }}
-              className="btn btn-primary w-full h-12 rounded-xl text-base"
+            <button
+              className="btn btn-primary w-full h-11 rounded-xl text-sm font-semibold mt-1"
               type="submit"
+              disabled={isPending}
             >
               {isPending ? (
                 <>
-                  <span className="loading loading-spinner loading-sm"></span>
+                  <span className="loading loading-spinner loading-xs"></span>
                   Creating Account...
                 </>
               ) : (
                 "Create Account"
               )}
-            </motion.button>
+            </button>
 
-            {/* LOGIN */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-center pt-2"
-            >
-              <p className="text-sm sm:text-base">
+            <div className="text-center pt-2">
+              <p className="text-xs sm:text-sm">
                 Already have an account?{" "}
-                <Link
-                  to="/login"
-                  className="text-primary font-semibold hover:underline"
-                >
+                <Link to="/login" className="text-primary font-semibold hover:underline">
                   Sign In
                 </Link>
               </p>
-            </motion.div>
+            </div>
           </form>
-        </motion.div>
+        </div>
 
-        {/* RIGHT SIDE */}
-        <motion.div
-          initial={{ x: 40, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="hidden lg:flex w-full lg:w-1/2 bg-primary/5 items-center justify-center relative overflow-hidden"
-        >
-          {/* Floating Animation */}
-          <motion.div
-            animate={{ y: [0, -20, 0] }}
-            transition={{
-              repeat: Infinity,
-              duration: 4,
-            }}
-            className="max-w-md p-10"
-          >
-            {/* IMAGE */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="relative aspect-square max-w-sm mx-auto"
-            >
+        <div className="hidden lg:flex w-full lg:w-1/2 bg-base-200/50 items-center justify-center p-8 border-l border-base-300">
+          <div className="max-w-sm text-center space-y-4">
+            <div className="size-48 mx-auto aspect-square">
               <img
                 src="/i.png"
                 alt="Connectify"
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain"
               />
-            </motion.div>
-
-            {/* TEXT */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-center space-y-4 mt-8"
-            >
-              <h2 className="text-2xl font-bold leading-snug">
-                Connect with language partners worldwide
-              </h2>
-
-              <p className="opacity-70 text-base leading-relaxed">
-                Practice conversations, make friends, and improve your
-                communication skills together in real time.
-              </p>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
+            </div>
+            <h3 className="text-xl font-bold">Language Exchange Platform</h3>
+            <p className="text-xs opacity-70 leading-relaxed">
+              Connect with partners, start conversations, and improve your speaking skills.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,16 +1,30 @@
 import { useState } from "react";
-import { ShipWheelIcon } from "lucide-react";
+import { FiArrowRight, FiCheckCircle, FiGlobe, FiUserCheck, FiZap } from "react-icons/fi";
 import { Link } from "react-router";
-import { motion } from "framer-motion";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useLogin from "../hooks/useLogin";
+import { demoLogin } from "../lib/api";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
+  const queryClient = useQueryClient();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
   const { isPending, error, loginMutation } = useLogin();
+
+  const { mutate: handleDemoLogin, isPending: isDemoPending } = useMutation({
+    mutationFn: demoLogin,
+    onSuccess: (data) => {
+      toast.success(`Logged in as ${data.user?.fullName}`);
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Demo login failed");
+    },
+  });
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -19,90 +33,71 @@ const LoginPage = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden relative"
+      className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-base-100"
       data-theme="forest"
     >
-      <div className="absolute top-0 left-0 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-pulse" />
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 40 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 border border-primary/20 flex flex-col lg:flex-row w-full max-w-6xl mx-auto 
-        bg-base-100/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden"
-      >
-        {/* LOGIN FORM SECTION */}
-        <motion.div
-          initial={{ x: -80, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          className="w-full lg:w-1/2 p-6 sm:p-8 md:p-10 flex flex-col justify-center"
-        >
-          {/* LOGO */}
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            className="mb-8 flex items-center gap-3"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              <ShipWheelIcon className="size-10 text-primary" />
-            </motion.div>
-
-            <span
-              className="text-3xl sm:text-4xl font-black font-mono bg-clip-text text-transparent bg-gradient-to-r
-              from-primary to-secondary tracking-wider"
-            >
+      <div className="border border-primary/20 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100/90 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 md:p-10 flex flex-col justify-center">
+          <div className="mb-5 flex items-center gap-2.5">
+            <FiGlobe className="size-8 text-primary" />
+            <span className="text-2xl sm:text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               Connectify
             </span>
-          </motion.div>
+          </div>
+
+          {/* Quick Recruiter Demo Box */}
+          <div className="bg-primary/10 border border-primary/30 rounded-2xl p-4 mb-5 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider">
+                <FiZap className="size-3.5" />
+                Recruiter & Quick Demo Mode
+              </span>
+              <span className="badge badge-primary badge-xs font-semibold">1-Click</span>
+            </div>
+
+            <p className="text-[11px] opacity-75 leading-tight">
+              Test real-time chat, AI translation & video calls side-by-side across two tabs:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => handleDemoLogin("user1")}
+                disabled={isDemoPending || isPending}
+                className="btn btn-outline btn-primary btn-xs h-10 rounded-xl flex flex-col items-start justify-center p-2 text-left"
+              >
+                <span className="font-bold text-[11px] leading-tight">User 1: Alex</span>
+                <span className="text-[9px] opacity-70 font-normal">Native: EN | Learn: ES</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDemoLogin("user2")}
+                disabled={isDemoPending || isPending}
+                className="btn btn-outline btn-secondary btn-xs h-10 rounded-xl flex flex-col items-start justify-center p-2 text-left"
+              >
+                <span className="font-bold text-[11px] leading-tight">User 2: Elena</span>
+                <span className="text-[9px] opacity-70 font-normal">Native: ES | Learn: EN</span>
+              </button>
+            </div>
+          </div>
 
           {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="alert alert-error mb-5"
-            >
-              <span>{error.response.data.message}</span>
-            </motion.div>
+            <div className="alert alert-error mb-4 rounded-xl py-2 px-3 text-xs">
+              <span>{error.response?.data?.message || "Login failed"}</span>
+            </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2 className="text-2xl sm:text-3xl font-bold">
-                Welcome Back
-              </h2>
-
-              <p className="text-sm sm:text-base opacity-70 mt-2">
-                Sign in to continue your language journey with friends worldwide.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -25 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="form-control w-full space-y-2"
-            >
-              <label className="label">
-                <span className="label-text font-medium">Email</span>
+          <form onSubmit={handleLogin} className="space-y-3.5">
+            <div className="form-control w-full space-y-1">
+              <label className="label py-0.5">
+                <span className="label-text font-medium text-xs">Email</span>
               </label>
-
               <input
                 type="email"
-                placeholder="hello@example.com"
+                placeholder="name@example.com"
                 value={loginData.email}
-                className="input input-bordered w-full h-12 rounded-xl focus:outline-none focus:border-primary transition-all duration-300"
+                className="input input-bordered w-full h-10 rounded-xl text-xs"
                 required
                 onChange={(e) =>
                   setLoginData({
@@ -111,22 +106,16 @@ const LoginPage = () => {
                   })
                 }
               />
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -25 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="form-control w-full space-y-2"
-            >
-              <label className="label">
-                <span className="label-text font-medium">Password</span>
+            <div className="form-control w-full space-y-1">
+              <label className="label py-0.5">
+                <span className="label-text font-medium text-xs">Password</span>
               </label>
-
               <input
                 type="password"
                 placeholder="********"
-                className="input input-bordered w-full h-12 rounded-xl focus:outline-none focus:border-primary transition-all duration-300"
+                className="input input-bordered w-full h-10 rounded-xl text-xs"
                 value={loginData.password}
                 required
                 onChange={(e) =>
@@ -136,99 +125,50 @@ const LoginPage = () => {
                   })
                 }
               />
-            </motion.div>
+            </div>
 
-            <motion.button
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0px 0px 25px rgba(34,197,94,0.35)",
-              }}
-              whileTap={{ scale: 0.96 }}
+            <button
               type="submit"
-              className="btn btn-primary w-full h-12 rounded-xl text-base font-semibold"
-              disabled={isPending}
+              className="btn btn-primary w-full h-10 rounded-xl text-xs font-semibold mt-1"
+              disabled={isPending || isDemoPending}
             >
               {isPending ? (
                 <>
-                  <span className="loading loading-spinner loading-sm"></span>
+                  <span className="loading loading-spinner loading-xs"></span>
                   Signing in...
                 </>
               ) : (
-                "Sign In"
+                "Sign In with Credentials"
               )}
-            </motion.button>
+            </button>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-center pt-2"
-            >
-              <p className="text-sm sm:text-base">
+            <div className="text-center pt-1">
+              <p className="text-xs">
                 Don't have an account?{" "}
-                <Link
-                  to="/signup"
-                  className="text-primary font-semibold hover:underline"
-                >
+                <Link to="/signup" className="text-primary font-semibold hover:underline">
                   Create one
                 </Link>
               </p>
-            </motion.div>
+            </div>
           </form>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ x: 80, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="hidden lg:flex w-full lg:w-1/2 bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/5 items-center justify-center relative overflow-hidden"
-        >
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 4,
-            }}
-            className="absolute w-96 h-96 bg-primary/20 rounded-full blur-3xl"
-          />
-
-          <div className="relative z-10 max-w-lg p-10">
-            <motion.div
-              animate={{ y: [0, -12, 0] }}
-              transition={{
-                repeat: Infinity,
-                duration: 3,
-              }}
-              className="relative aspect-square max-w-md mx-auto"
-            >
+        <div className="hidden lg:flex w-full lg:w-1/2 bg-base-200/50 items-center justify-center p-8 border-l border-base-300">
+          <div className="max-w-sm text-center space-y-4">
+            <div className="size-44 mx-auto aspect-square">
               <img
                 src="/i.png"
-                alt="Language connection illustration"
-                className="w-full h-full object-contain drop-shadow-2xl"
+                alt="Connectify"
+                className="w-full h-full object-contain"
               />
-            </motion.div>
-
-            {/* TEXT */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="text-center space-y-4 mt-6"
-            >
-              <h2 className="text-2xl font-bold">
-                Connect with people around the world
-              </h2>
-
-              <p className="opacity-70 leading-relaxed">
-                Practice conversations, make new friends, and improve your
-                language skills with real-time messaging and video calls.
-              </p>
-            </motion.div>
+            </div>
+            <h3 className="text-lg font-bold">Language Exchange & AI Assistant</h3>
+            <p className="text-xs opacity-70 leading-relaxed">
+              Connect with native speakers, practice with Gemini AI, and start instant HD video calls.
+            </p>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

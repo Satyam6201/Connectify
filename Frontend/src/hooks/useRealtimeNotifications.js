@@ -14,7 +14,7 @@ export const useRealtimeNotifications = () => {
     queryKey: ["friendRequests"],
     queryFn: getFriendRequests,
     enabled: !!authUser?.isOnboarded,
-    refetchInterval: 10000, // Poll every 10 seconds for real-time responsiveness
+    refetchInterval: 10000,
   });
 
   const { mutate: acceptReq } = useMutation({
@@ -41,7 +41,6 @@ export const useRealtimeNotifications = () => {
     const currentIds = new Set(currentIncoming.map((r) => r._id));
 
     if (!isFirstLoadRef.current) {
-      // Find new incoming requests that were not present previously
       currentIncoming.forEach((request) => {
         if (!previousRequestIdsRef.current.has(request._id)) {
           showFriendRequestToast({

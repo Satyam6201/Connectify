@@ -1,13 +1,7 @@
-import {
-  BellIcon,
-  HomeIcon,
-  ShipWheelIcon,
-  UserIcon,
-} from "lucide-react";
-
+import { FiBell, FiHome, FiUsers } from "react-icons/fi";
+import { IoSparklesOutline } from "react-icons/io5";
 import useAuthUser from "../hooks/useAuthUser";
 import { Link, useLocation } from "react-router";
-import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { getFriendRequests } from "../lib/api";
 
@@ -28,184 +22,84 @@ const Sidebar = () => {
     {
       path: "/",
       label: "Home",
-      icon: HomeIcon,
+      icon: FiHome,
+    },
+    {
+      path: "/ai-partner",
+      label: "AI Practice Partner",
+      icon: IoSparklesOutline,
+      highlight: true,
     },
     {
       path: "/friends",
       label: "Friends",
-      icon: UserIcon,
+      icon: FiUsers,
     },
     {
       path: "/notifications",
       label: "Notifications",
-      icon: BellIcon,
+      icon: FiBell,
       badge: pendingCount > 0 ? pendingCount : null,
     },
   ];
 
   return (
     <>
-      {/* DESKTOP SIDEBAR */}
-      <motion.aside
-        initial={{ x: -80, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{
-          duration: 0.5,
-          type: "spring",
-        }}
-        className="w-64 bg-base-200/80 backdrop-blur-xl border-r border-base-300 
-        hidden lg:flex flex-col h-screen sticky top-0 overflow-hidden"
-      >
-        {/* Animated Background Glow */}
-        <div className="absolute top-0 left-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-40 h-40 bg-secondary/20 rounded-full blur-3xl animate-pulse" />
-
-        {/* LOGO */}
-        {/* <motion.div
-          whileHover={{ scale: 1.03 }}
-          className="relative z-10 p-5 border-b border-base-300"
-        >
-          <Link to="/" className="flex items-center gap-3">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{
-                repeat: Infinity,
-                duration: 12,
-                ease: "linear",
-              }}
-            >
-              <ShipWheelIcon className="size-8 text-primary" />
-            </motion.div>
-
-            <span
-              className="text-3xl font-black font-mono bg-clip-text text-transparent
-              bg-gradient-to-r from-primary to-secondary tracking-wider"
-            >
-              Connectify
-            </span>
-          </Link>
-        </motion.div> */}
-
-        {/* NAVIGATION */}
-        <nav className="flex-1 p-4 space-y-3 relative z-10">
-          {navItems.map((item, index) => {
+      <aside className="w-60 bg-base-200/80 backdrop-blur-xl border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0 overflow-hidden">
+        <nav className="flex-1 p-3 space-y-1.5 mt-2">
+          {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentPath === item.path;
 
             return (
-              <motion.div
+              <Link
                 key={item.path}
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
+                to={item.path}
+                className={`btn btn-ghost justify-start w-full gap-2.5 normal-case rounded-xl text-xs font-medium transition-all duration-200 ${
+                  isActive
+                    ? "btn-active shadow-sm"
+                    : item.highlight
+                    ? "bg-primary/10 text-primary hover:bg-primary/20"
+                    : "hover:bg-base-300"
+                }`}
               >
-                <Link
-                  to={item.path}
-                  className={`relative overflow-hidden btn btn-ghost justify-start 
-                  w-full gap-3 normal-case rounded-2xl text-base transition-all duration-300
-                  ${isActive ? "btn-active shadow-lg" : "hover:bg-base-300"}`}
-                >
-                  {/* Active Glow */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="active-pill"
-                      className="absolute inset-0 bg-primary/10 rounded-2xl"
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25,
-                      }}
-                    />
-                  )}
-
-                  <motion.div whileHover={{ rotate: 8, scale: 1.1 }} className="relative">
-                    <Icon className="size-5 text-base-content opacity-80 relative z-10" />
-                  </motion.div>
-
-                  <span className="relative z-10 flex-1 text-left">{item.label}</span>
-
-                  {item.badge && (
-                    <span className="relative z-10 badge badge-error badge-sm text-white font-bold animate-pulse">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              </motion.div>
+                <Icon className="size-4 opacity-90" />
+                <span className="flex-1 text-left">{item.label}</span>
+                {item.badge && (
+                  <span className="badge badge-error badge-sm text-white font-bold">
+                    {item.badge}
+                  </span>
+                )}
+                {item.highlight && !isActive && (
+                  <span className="badge badge-primary badge-xs font-semibold">AI</span>
+                )}
+              </Link>
             );
           })}
         </nav>
 
-        {/* USER PROFILE */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="p-4 border-t border-base-300 mt-auto relative z-10"
-        >
-          <motion.div
-            whileHover={{
-              scale: 1.02,
-              y: -2,
-            }}
-            className="bg-base-100 rounded-2xl p-3 shadow-md flex items-center gap-3"
-          >
-            <div className="relative">
-              <motion.div
-                animate={{
-                  scale: [1, 1.15, 1],
-                }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 2,
-                }}
-                className="absolute inset-0 rounded-full bg-success/30"
-              />
-
-              <div className="avatar relative">
-                <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img
-                    src={authUser?.profilePic}
-                    alt="User Avatar"
-                  />
-                </div>
+        <div className="p-3 border-t border-base-300 mt-auto">
+          <div className="bg-base-100 rounded-xl p-2.5 shadow-sm flex items-center gap-2.5">
+            <div className="avatar">
+              <div className="w-10 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-1">
+                <img src={authUser?.profilePic} alt="User Avatar" />
               </div>
             </div>
 
             <div className="flex-1 overflow-hidden">
-              <p className="font-bold text-sm truncate">
-                {authUser?.fullName}
-              </p>
-
-              <p className="text-xs text-success flex items-center gap-1 mt-1">
-                <motion.span
-                  animate={{
-                    scale: [1, 1.4, 1],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1.5,
-                  }}
-                  className="size-2 rounded-full bg-success inline-block"
-                />
+              <p className="font-semibold text-xs truncate">{authUser?.fullName}</p>
+              <p className="text-[11px] text-success flex items-center gap-1 mt-0.5">
+                <span className="size-1.5 rounded-full bg-success inline-block" />
                 Online
               </p>
             </div>
-          </motion.div>
-        </motion.div>
-      </motion.aside>
+          </div>
+        </div>
+      </aside>
 
-      {/* MOBILE BOTTOM NAVBAR */}
-      <motion.div
-        initial={{ y: 80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="fixed bottom-0 left-0 right-0 lg:hidden z-50"
-      >
-        <div
-          className="mx-4 mb-4 bg-base-200/90 backdrop-blur-2xl 
-          border border-base-300 rounded-3xl shadow-2xl"
-        >
-          <div className="flex items-center justify-around py-3">
+      <div className="fixed bottom-0 left-0 right-0 lg:hidden z-50">
+        <div className="mx-3 mb-3 bg-base-200/90 backdrop-blur-2xl border border-base-300 rounded-2xl shadow-xl">
+          <div className="flex items-center justify-around py-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPath === item.path;
@@ -214,35 +108,27 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className="relative flex flex-col items-center justify-center"
+                  className="flex flex-col items-center justify-center p-1.5"
                 >
-                  <motion.div
-                    whileTap={{ scale: 0.9 }}
-                    whileHover={{ y: -3 }}
-                    className={`p-3 rounded-2xl transition-all duration-300 relative
-                    ${
-                      isActive
-                        ? "bg-primary text-primary-content shadow-lg"
-                        : "bg-transparent"
+                  <div
+                    className={`p-2 rounded-xl transition-all relative ${
+                      isActive ? "bg-primary text-primary-content" : "bg-transparent"
                     }`}
                   >
-                    <Icon className="size-5" />
+                    <Icon className="size-4" />
                     {item.badge && (
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-bold text-white shadow-sm">
+                      <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-error text-[8px] font-bold text-white">
                         {item.badge}
                       </span>
                     )}
-                  </motion.div>
-
-                  <span className="text-[10px] mt-1">
-                    {item.label}
-                  </span>
+                  </div>
+                  <span className="text-[10px] mt-0.5">{item.label.replace("AI Practice Partner", "AI Bot")}</span>
                 </Link>
               );
             })}
           </div>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 };
