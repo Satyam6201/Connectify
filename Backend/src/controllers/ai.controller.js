@@ -3,11 +3,11 @@ import { generateAIContent } from "../lib/gemini.js";
 function buildImageUrl(prompt, style = "") {
   let enrichedPrompt = prompt.trim();
   if (style && style !== "none" && style !== "general") {
-    enrichedPrompt = `${enrichedPrompt}, ${style} style, highly detailed, high resolution, 8k wallpaper`;
+    enrichedPrompt = `${enrichedPrompt}, ${style} style, highly detailed, sharp focus`;
   }
   const seed = Math.floor(Math.random() * 1000000);
   return {
-    imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(enrichedPrompt)}?width=1024&height=1024&nologo=true&seed=${seed}`,
+    imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(enrichedPrompt)}?model=flux&seed=${seed}`,
     enrichedPrompt,
   };
 }

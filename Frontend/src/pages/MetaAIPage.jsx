@@ -182,37 +182,37 @@ const MetaAIPage = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col bg-base-100 max-w-5xl mx-auto p-3 sm:p-5">
-      <div className="bg-base-200/90 border border-base-300 rounded-2xl p-3.5 mb-3 shadow-sm flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="size-10 rounded-2xl bg-gradient-to-tr from-primary via-secondary to-accent p-0.5 shadow-md">
+    <div className="h-full w-full flex-1 min-h-0 flex flex-col bg-base-100 max-w-5xl mx-auto p-2 sm:p-4 overflow-hidden">
+      <div className="bg-base-200/90 border border-base-300 rounded-2xl p-2.5 sm:p-3.5 mb-2 sm:mb-3 shadow-sm flex items-center justify-between gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="relative shrink-0">
+            <div className="size-8 sm:size-10 rounded-2xl bg-gradient-to-tr from-primary via-secondary to-accent p-0.5 shadow-md">
               <div className="w-full h-full bg-base-100 rounded-[14px] flex items-center justify-center text-primary">
-                <FaRobot className="size-5" />
+                <FaRobot className="size-4 sm:size-5" />
               </div>
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 size-3 bg-success rounded-full ring-2 ring-base-100" />
+            <span className="absolute -bottom-0.5 -right-0.5 size-2.5 sm:size-3 bg-success rounded-full ring-2 ring-base-100" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="font-bold text-sm sm:text-base">Meta AI</h2>
-              <span className="badge badge-primary badge-xs">Assistant & Art</span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <h2 className="font-bold text-xs sm:text-base truncate">Meta AI</h2>
+              <span className="badge badge-primary badge-xs scale-90 sm:scale-100">Art & Chat</span>
             </div>
-            <p className="text-[11px] opacity-60">
-              Ask anything, write code, or type <code className="text-primary font-mono">/imagine</code> for art
+            <p className="text-[10px] sm:text-[11px] opacity-60 truncate">
+              Ask anything or type <code className="text-primary font-mono font-bold">/imagine</code>
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           <button
             onClick={() => setIsImageMode((prev) => !prev)}
-            className={`btn btn-xs rounded-lg gap-1.5 ${
+            className={`btn btn-xs rounded-lg gap-1 sm:gap-1.5 px-2 sm:px-3 ${
               isImageMode ? "btn-primary" : "btn-ghost border border-base-300"
             }`}
           >
             <FiImage className="size-3.5" />
-            <span className="hidden sm:inline">{isImageMode ? "Image Mode ON" : "Image Mode"}</span>
+            <span className="hidden xs:inline sm:inline">{isImageMode ? "Image Mode ON" : "Image Mode"}</span>
           </button>
 
           <button
@@ -226,17 +226,17 @@ const MetaAIPage = () => {
       </div>
 
       {isImageMode && (
-        <div className="mb-2 bg-base-200/80 border border-primary/30 rounded-xl p-2.5 flex items-center gap-2 overflow-x-auto text-xs">
-          <span className="font-semibold text-primary shrink-0 flex items-center gap-1">
-            <IoSparklesOutline className="size-3.5" />
-            Art Style:
+        <div className="mb-2 bg-base-200/80 border border-primary/30 rounded-xl p-2 flex items-center gap-2 overflow-x-auto text-xs shrink-0 no-scrollbar touch-pan-x">
+          <span className="font-semibold text-primary shrink-0 flex items-center gap-1 text-[11px] sm:text-xs">
+            <IoSparklesOutline className="size-3 sm:size-3.5" />
+            Style:
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5">
             {IMAGE_STYLES.map((style) => (
               <button
                 key={style.id}
                 onClick={() => setSelectedStyle(style.id)}
-                className={`btn btn-xs rounded-lg ${
+                className={`btn btn-xs rounded-lg text-[10px] sm:text-xs px-2 ${
                   selectedStyle === style.id ? "btn-primary" : "btn-ghost bg-base-100/60"
                 }`}
               >
@@ -247,7 +247,7 @@ const MetaAIPage = () => {
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto bg-base-200/50 border border-base-300 rounded-2xl p-3 sm:p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto bg-base-200/50 border border-base-300 rounded-2xl p-2.5 sm:p-4 space-y-3 sm:space-y-4">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -276,6 +276,10 @@ const MetaAIPage = () => {
                       alt={msg.imagePrompt || "AI generated image"}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover/img:scale-[1.02]"
                       loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(msg.imagePrompt || "beautiful artwork")}`;
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <button
@@ -346,7 +350,7 @@ const MetaAIPage = () => {
       </div>
 
       {messages.length <= 2 && (
-        <div className="py-2 overflow-x-auto flex items-center gap-1.5 no-scrollbar">
+        <div className="py-1.5 overflow-x-auto flex items-center gap-1.5 no-scrollbar touch-pan-x shrink-0">
           {SUGGESTED_PROMPTS.map((item, idx) => (
             <button
               key={idx}
@@ -356,7 +360,7 @@ const MetaAIPage = () => {
                   setIsImageMode(true);
                 }
               }}
-              className="btn btn-xs rounded-full border border-base-300 bg-base-200/80 hover:bg-base-200 shrink-0 text-[11px] font-normal"
+              className="btn btn-xs rounded-full border border-base-300 bg-base-200/80 hover:bg-base-200 shrink-0 text-[10px] sm:text-[11px] font-normal px-2.5"
             >
               <IoSparklesOutline className="size-3 text-primary" />
               {item.label}
@@ -365,21 +369,21 @@ const MetaAIPage = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-2 flex items-center gap-2">
-        <div className="relative flex-1 flex items-center">
+      <form onSubmit={handleSubmit} className="mt-1.5 sm:mt-2 flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="relative flex-1 flex items-center min-w-0">
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={
               isImageMode
-                ? "Describe the image to create (e.g. cute cat in space)..."
+                ? "Describe the image to create..."
                 : "Ask anything or type /imagine <prompt>..."
             }
-            className="input input-bordered w-full h-11 pl-3.5 pr-24 rounded-xl text-xs sm:text-sm bg-base-100"
+            className="input input-bordered w-full h-10 sm:h-11 pl-3 pr-20 sm:pr-24 rounded-xl text-xs sm:text-sm bg-base-100"
           />
 
-          <div className="absolute right-2 flex items-center gap-1">
+          <div className="absolute right-1.5 sm:right-2 flex items-center gap-1">
             <button
               type="button"
               onClick={() => {
@@ -388,7 +392,7 @@ const MetaAIPage = () => {
                 }
                 setIsImageMode(true);
               }}
-              className="btn btn-ghost btn-xs text-[10px] text-primary hover:bg-primary/10 rounded-lg px-2"
+              className="btn btn-ghost btn-xs text-[9px] sm:text-[10px] text-primary hover:bg-primary/10 rounded-lg px-1.5 sm:px-2 font-mono"
               title="Add /imagine command"
             >
               /imagine
@@ -399,7 +403,7 @@ const MetaAIPage = () => {
         <button
           type="submit"
           disabled={!inputText.trim() || isLoading}
-          className="btn btn-primary btn-sm h-11 px-4 sm:px-5 rounded-xl gap-1.5 text-xs font-semibold shrink-0"
+          className="btn btn-primary btn-sm h-10 sm:h-11 px-3.5 sm:px-5 rounded-xl gap-1 sm:gap-1.5 text-xs font-semibold shrink-0"
         >
           {isImageMode ? <FiImage className="size-3.5" /> : <FiSend className="size-3.5" />}
           <span className="hidden sm:inline">{isImageMode ? "Generate" : "Send"}</span>

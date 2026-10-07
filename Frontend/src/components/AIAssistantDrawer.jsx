@@ -159,6 +159,10 @@ const AIAssistantDrawer = ({ isOpen, onClose, authUser, onApplyText }) => {
                       src={askResult.imageUrl}
                       alt={askResult.imagePrompt || "AI art"}
                       className="w-full rounded-lg object-cover max-h-48"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(askResult.imagePrompt || "art")}`;
+                      }}
                     />
                     <div className="flex items-center gap-2 pt-1">
                       <a

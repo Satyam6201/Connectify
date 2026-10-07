@@ -48,7 +48,7 @@ const FriendsPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-base-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-base-100 p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-base-300 pb-5">
           <div>

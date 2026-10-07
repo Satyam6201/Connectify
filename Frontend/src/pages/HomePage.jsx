@@ -82,8 +82,8 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-base-100">
-      <div className="container mx-auto space-y-10 max-w-7xl">
+    <div className="min-h-screen p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 bg-base-100">
+      <div className="container mx-auto space-y-8 sm:space-y-10 max-w-7xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-base-300 pb-5">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2.5">
