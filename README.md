@@ -1,234 +1,208 @@
-<div align="center">
-  <img width="100%" max-width="900" alt="Connectify Banner" src="https://github.com/user-attachments/assets/443baa7c-c7d1-4870-8f7a-79f10ba0d52a" style="border-radius: 16px; margin-bottom: 20px;" />
+# Connectify
 
-  # 🌐 Connectify – Global Language Exchange, Chat & Video Calling
+Real-Time Language Exchange, 1-on-1 Chat, HD Video Calls, and Gemini AI Language Assistance.
 
-  <p align="center">
-    <strong>Full-Stack Real-Time Language Exchange, 1-on-1 Chat, HD Video Calls & Social Networking</strong>
-  </p>
-
-  <p align="center">
-    <img src="https://skillicons.dev/icons?i=react,nodejs,express,mongodb,redis,docker,tailwind,vite,javascript&perline=9" />
-  </p>
-
-  <p align="center">
-    <img src="https://img.shields.io/badge/Stack-MERN%20+%20Redis-blue?style=for-the-badge" alt="Stack" />
-    <img src="https://img.shields.io/badge/RealTime-Stream%20SDK-005fff?style=for-the-badge" alt="Stream" />
-    <img src="https://img.shields.io/badge/Security-Redis%20Rate%20Limit-red?style=for-the-badge" alt="RateLimit" />
-    <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-    <a href="https://connectify-videocall.vercel.app" target="_blank"><img src="https://img.shields.io/badge/🔴 Live-Demo-green?style=for-the-badge" /></a>
-    <a href="https://github.com/Satyam6201/Connectify" target="_blank"><img src="https://img.shields.io/badge/💻 Source-Code-blue?style=for-the-badge" /></a>
-  </p>
-</div>
+<p align="center">
+  <img src="https://img.shields.io/badge/Stack-MERN%20+%20Redis-blue?style=for-the-badge" alt="Stack" />
+  <img src="https://img.shields.io/badge/AI-Gemini%203.5-orange?style=for-the-badge" alt="Gemini" />
+  <img src="https://img.shields.io/badge/RealTime-Stream%20SDK-005fff?style=for-the-badge" alt="Stream" />
+  <img src="https://img.shields.io/badge/Security-Redis%20Rate%20Limit-red?style=for-the-badge" alt="RateLimit" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <a href="https://connectify-videocall.vercel.app" target="_blank"><img src="https://img.shields.io/badge/Live-Demo-green?style=for-the-badge" alt="Live Demo" /></a>
+  <a href="https://github.com/Satyam6201/Connectify" target="_blank"><img src="https://img.shields.io/badge/Source-Code-blue?style=for-the-badge" alt="Source Code" /></a>
+</p>
 
 ---
 
-## 📖 Overview
+## Overview
 
-**Connectify** is a modern, high-performance web platform designed to connect language learners worldwide. Users can discover language exchange partners, send and receive friend requests, engage in real-time messaging with typing indicators, start crystal-clear 1-on-1 video calls, personalize their profile with dynamic avatars, and customize their interface with 32+ theme presets.
+Connectify is a high-performance web platform designed to connect language learners worldwide. Users can discover language exchange partners, manage friend requests, chat in real time, launch HD video calls, practice with an always-online Gemini AI Language Partner, check message grammar, translate text instantly, and customize their interface with 32 theme presets.
 
-Engineered with scalability in mind, Connectify utilizes **Redis caching**, **distributed rate limiting**, **MongoDB indexing**, **Gzip compression**, **Vite vendor code-splitting**, and **Docker containerization**.
-
----
-
-## ✨ Key Features
-
-### 🔐 Authentication & Security
-- **JWT & HTTP-Only Cookies**: Secure, XSS-resistant and CSRF-protected session management.
-- **Bcrypt Hashing**: Automatic pre-save salting and password hashing.
-- **Route Protection**: Middleware verification with automatic token refresh handling.
-- **Redis Rate Limiting**: Distributed protection against brute-force attacks (`authLimiter`: 10 req / 15 min; `apiLimiter`: 100 req / min) with zero-downtime in-memory fallback.
-
-### 👥 Language Exchange & Social Discovery
-- **🎯 "Perfect Match" Detection**: Automatically highlights users whose native language matches your learning language and vice-versa.
-- **Live Search & Multi-Filters**: Instant client-side & server-side filtering by name, city/location, native language, and target language.
-- **Interactive Profile Editing**: Edit bio, location, languages, and roll new DiceBear avatar previews anytime via modal.
-- **Friend Request Workflow**: Send, accept, decline/reject incoming invites, or cancel pending outgoing requests.
-- **Mutual Unfriending**: Safely remove friends with confirmation and complete bi-directional database cleanup.
-
-### 💬 Real-Time Messaging & 📹 Video Calling
-- **Stream Chat Integration**: Low-latency 1-on-1 direct channels with message persistence, timestamps, and thread support.
-- **Stream Video SDK Integration**: 1-on-1 & group HD video calls with camera/mic controls, speaker layout, and screen sharing.
-- **Direct Video Call Invites**: One-click video call launcher inside chat with join links sent automatically.
-
-### 🔔 Styled Real-Time Notifications
-- **Custom Toast Cards (`react-hot-toast` + `framer-motion`)**:
-  - **Friend Request Toast**: Displays sender avatar, details, and interactive **"Accept"** / **"Decline"** buttons right inside the toast.
-  - **Direct Message Toast**: Shows user avatar, snippet preview, and one-click navigation to the chat room.
-  - **Video Call Alert Toast**: Live animated alert with **"Join"** button.
-- **Live Badges**: Dynamic unread counter badges on the top navigation bar and sidebar.
-
-### 🎨 UI/UX & Theming
-- **32 Theme Presets**: Powered by Tailwind CSS & DaisyUI (Coffee, Forest, Synthwave, Luxury, Cyberpunk, etc.).
-- **Theme Persistence**: Instant theme switching synced to `localStorage` via Zustand.
-- **Fluid Micro-Animations**: Page transitions, pulsing presence indicators, and interactive hover states powered by Framer Motion.
-- **Responsive Layout**: Desktop sidebar and mobile bottom navigation bar.
+The application is built for scalability and low latency, featuring Redis caching, distributed sliding-window rate limiting, MongoDB indexing, Gzip compression, Vite vendor code-splitting, and Docker containerization.
 
 ---
 
-## 📁 Detailed Folder & File Structure
+## Key Features
+
+### Recruiter and Quick Demo Mode
+- **1-Click Demo Login**: Instantly log in as Demo User 1 (*Alex - Native English, Learning Spanish*) or Demo User 2 (*Elena - Native Spanish, Learning English*) right from the login screen.
+- Pre-configured friendships and synchronized Stream Chat credentials allow interviewers and recruiters to test real-time chat, HD video calling, and toast alerts side-by-side across two browser windows in seconds.
+
+### AI-Powered Language Assistance (Google Gemini AI)
+- **Real-Time Message Translation**: Translate any text or incoming message into your native or target language.
+- **AI Grammar and Tone Coach**: Instant grammar checking with corrections, explanations, and natural phrasing suggestions before sending.
+- **AI Practice Partner (Bot)**: An always-available conversational partner for immersive language practice across custom scenarios (Casual Chat, Restaurant, Travel, Job Interview).
+- **Text-to-Speech Pronunciation**: Listen to native pronunciation directly inside the practice chat.
+
+### Authentication and Security
+- Secure session management using JSON Web Tokens (JWT) stored in HTTP-Only cookies.
+- Automatic password salting and hashing with Bcrypt pre-save hooks.
+- Route protection middleware for authenticated endpoints.
+- Distributed Redis sliding-window rate limiting with an in-memory fallback store.
+
+### Language Exchange and Partner Discovery
+- Mutual match detection: Identifies and highlights users whose target language matches your native language and vice-versa.
+- Multi-criteria filtering: Filter learners by name, location, native language, and learning language.
+- Profile management: Update bio, location, languages, and generate new avatar styles.
+- Friendship lifecycle: Send, accept, decline, or cancel friend requests.
+- Mutual unfriending: Remove friends with full bi-directional database cleanup.
+
+### Real-Time Chat and Video Calling
+- Direct 1-on-1 messaging powered by Stream Chat SDK.
+- 1-on-1 HD video calling powered by Stream Video SDK with microphone and camera controls.
+- Integrated AI Language Coach drawer inside the chat view.
+- In-chat video call launcher with join links.
+
+### Notifications
+- Real-time toast notifications for incoming friend requests with instant Accept and Decline actions.
+- Dynamic unread count badges in navigation bars.
+
+### UI and Theming
+- 32 theme presets using Tailwind CSS and DaisyUI.
+- Theme persistence synced to local storage via Zustand.
+- Responsive layouts for desktop and mobile devices with React Icons.
+
+---
+
+## Project Structure
 
 ```
 Connectify/
-│
-├── backend/                                # Node.js & Express API Backend
+├── backend/
 │   ├── src/
 │   │   ├── controllers/
-│   │   │   ├── auth.controller.js          # Signup, Login, Logout, Onboarding, Update Profile
-│   │   │   ├── chat.controller.js          # Stream Chat Token generation
-│   │   │   └── user.controller.js          # Discover users, friends, send/accept/reject/cancel requests, unfriend
+│   │   │   ├── ai.controller.js
+│   │   │   ├── auth.controller.js
+│   │   │   ├── chat.controller.js
+│   │   │   └── user.controller.js
 │   │   ├── lib/
-│   │   │   ├── db.js                       # Mongoose MongoDB connection & error handlers
-│   │   │   ├── redis.js                    # ioredis client initialization, event listeners & retry logic
-│   │   │   └── stream.js                   # Stream Chat SDK client & user upsert synchronization
+│   │   │   ├── db.js
+│   │   │   ├── gemini.js
+│   │   │   ├── redis.js
+│   │   │   └── stream.js
 │   │   ├── middleware/
-│   │   │   ├── auth.middleware.js          # JWT token verification (protectRoute)
-│   │   │   └── rateLimiter.js              # Redis-backed rate limiting middleware with in-memory fallback
+│   │   │   ├── auth.middleware.js
+│   │   │   └── rateLimiter.js
 │   │   ├── models/
-│   │   │   ├── FriendRequest.js            # Friend request schema with compound indexes
-│   │   │   └── User.js                     # User schema with bcrypt hooks, language fields & indexes
+│   │   │   ├── FriendRequest.js
+│   │   │   └── User.js
 │   │   ├── routes/
-│   │   │   ├── auth.route.js               # /api/auth routes (signup, login, logout, onboarding, profile, me)
-│   │   │   ├── chat.route.js               # /api/chat routes (token generation)
-│   │   │   └── user.route.js               # /api/users routes (recommendations, friends, requests, unfriend)
-│   │   └── server.js                       # Express app bootstrap, Gzip compression, CORS, static serving & DB connect
-│   ├── .dockerignore                       # Excluded backend files from Docker build context
-│   ├── .env                                # Backend environment variables (ignored in Git)
-│   ├── Dockerfile                          # Multi-stage/lightweight Node 20 Alpine backend image
-│   └── package.json                        # Backend dependencies & scripts
+│   │   │   ├── ai.route.js
+│   │   │   ├── auth.route.js
+│   │   │   ├── chat.route.js
+│   │   │   └── user.route.js
+│   │   └── server.js
+│   ├── Dockerfile
+│   └── package.json
 │
-├── frontend/                               # Vite + React Single Page Application (SPA)
-│   ├── public/
-│   │   ├── i.png                           # App promotional illustrations & branding assets
-│   │   ├── icon.png                        # App logo icon
-│   │   └── vite.svg                        # Vite favicon
+├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── CallButton.jsx              # Direct video call launcher button inside chat
-│   │   │   ├── ChatLoader.jsx              # Animated Stream chat initialization loader
-│   │   │   ├── EditProfileModal.jsx        # Modal for updating profile info & randomized avatar generation
-│   │   │   ├── FriendCard.jsx              # Friend display card with language flags & chat link
-│   │   │   ├── Layout.jsx                  # Main application layout wrapper (Sidebar + Navbar)
-│   │   │   ├── Navbar.jsx                  # Top navigation with animated logo, theme switch, notifications & avatar
-│   │   │   ├── NoFriendsFound.jsx          # Empty state graphic for friends page
-│   │   │   ├── NoNotificationsFound.jsx    # Empty state graphic for notifications page
-│   │   │   ├── PageLoader.jsx              # Full-screen animated application loader
-│   │   │   ├── Sidebar.jsx                 # Responsive desktop sidebar & mobile bottom navigation bar
-│   │   │   └── ThemeSelector.jsx           # DaisyUI 32-theme selector dropdown
-│   │   ├── constants/
-│   │   │   └── index.js                    # Theme definitions, supported languages list & country flag mappings
+│   │   │   ├── AIAssistantDrawer.jsx
+│   │   │   ├── CallButton.jsx
+│   │   │   ├── ChatLoader.jsx
+│   │   │   ├── EditProfileModal.jsx
+│   │   │   ├── FriendCard.jsx
+│   │   │   ├── LanguageFlag.jsx
+│   │   │   ├── Layout.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── NoFriendsFound.jsx
+│   │   │   ├── NoNotificationsFound.jsx
+│   │   │   ├── PageLoader.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   └── ThemeSelector.jsx
 │   │   ├── hooks/
-│   │   │   ├── useAuthUser.js              # React Query hook to fetch current authenticated user
-│   │   │   ├── useLogin.js                 # React Query login mutation
-│   │   │   ├── useLogout.js                # React Query logout mutation
-│   │   │   ├── useRealtimeNotifications.js # Real-time polling & toast trigger for incoming friend requests
-│   │   │   └── useSignup.js                # React Query signup mutation
+│   │   │   ├── useAuthUser.js
+│   │   │   ├── useLogin.js
+│   │   │   ├── useLogout.js
+│   │   │   ├── useRealtimeNotifications.js
+│   │   │   └── useSignup.js
 │   │   ├── lib/
-│   │   │   ├── api.js                      # Centralized Axios API request helpers
-│   │   │   ├── axios.js                    # Configured Axios instance with withCredentials enabled
-│   │   │   ├── notificationToast.jsx       # Styled custom toast cards for requests, messages & calls
-│   │   │   └── utils.js                    # Text formatting & utility functions
+│   │   │   ├── api.js
+│   │   │   ├── axios.js
+│   │   │   ├── notificationToast.jsx
+│   │   │   └── utils.js
 │   │   ├── pages/
-│   │   │   ├── CallPage.jsx                # Stream Video 1-on-1 video call room with controls
-│   │   │   ├── ChatPage.jsx                # Stream Chat 1-on-1 messaging channel
-│   │   │   ├── FriendsPage.jsx             # Friends directory with search & remove friend capabilities
-│   │   │   ├── HomePage.jsx                # Main feed: friends grid + searchable & filterable learners
-│   │   │   ├── LoginPage.jsx               # Login page with animations
-│   │   │   ├── NotificationsPage.jsx       # Tabbed incoming requests, outgoing requests & accepted connections
-│   │   │   ├── OnboardingPage.jsx          # Initial profile onboarding (languages, bio, location, avatar)
-│   │   │   └── SignUpPage.jsx              # User registration page
+│   │   │   ├── AIPartnerPage.jsx
+│   │   │   ├── CallPage.jsx
+│   │   │   ├── ChatPage.jsx
+│   │   │   ├── FriendsPage.jsx
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── NotificationsPage.jsx
+│   │   │   ├── OnboardingPage.jsx
+│   │   │   └── SignUpPage.jsx
 │   │   ├── store/
-│   │   │   └── useThemeStore.js            # Zustand theme store with localStorage persistence
-│   │   ├── App.jsx                         # Main router configuration & route protection guards
-│   │   ├── index.css                       # Tailwind CSS directives & Stream Chat UI custom styles
-│   │   └── main.jsx                        # React root entry point with QueryClientProvider & BrowserRouter
-│   ├── .dockerignore                       # Excluded frontend files from Docker build context
-│   ├── .env                                # Frontend environment variables
-│   ├── Dockerfile                          # Multi-stage production build (Node builder + Nginx Alpine server)
-│   ├── nginx.conf                          # Nginx SPA history fallback & reverse proxy configuration
-│   ├── package.json                        # Frontend dependencies & scripts
-│   ├── postcss.config.js                   # PostCSS configuration for Tailwind
-│   ├── tailwind.config.js                  # Tailwind configuration with DaisyUI themes
-│   └── vite.config.js                      # Vite build configuration with Rollup manual vendor chunk-splitting
+│   │   │   └── useThemeStore.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── vite.config.js
 │
-├── .dockerignore                           # Root-level Docker ignore file
-├── .gitignore                              # Git ignore configuration
-├── docker-compose.yml                      # Multi-service Docker orchestrator (Redis, Backend, Frontend)
-├── package.json                            # Root convenience scripts for monorepo development
-└── README.md                               # Project documentation & reference guide
+├── docker-compose.yml
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 🛠️ Tech Stack Breakdown
+## Tech Stack
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend** | React 19, Vite, Tailwind CSS, DaisyUI (32 Themes), Framer Motion, Lucide Icons |
+| **Frontend** | React 19, Vite, Tailwind CSS, DaisyUI, Framer Motion, React Icons |
 | **State & Data Fetching** | TanStack React Query v5, Zustand, Axios |
-| **Real-Time Communications**| Stream Chat React SDK, Stream Video React SDK |
+| **Real-Time Communication** | Stream Chat React SDK, Stream Video React SDK |
+| **AI Engine** | Google Generative AI (Gemini 3.5 / Flash) |
 | **Backend & Runtime** | Node.js, Express.js (ES Modules), Gzip Compression, Cookie-Parser, CORS |
-| **Database & Caching** | MongoDB (Mongoose with Compound Indexing), Redis 7 (ioredis) |
-| **Security & Rate Limiting** | JWT (JSON Web Tokens), Bcrypt.js, Redis Sliding Window Rate Limiter |
+| **Database & Caching** | MongoDB (Mongoose), Redis 7 (ioredis) |
+| **Security & Rate Limiting** | JWT, Bcrypt.js, Redis Sliding Window Rate Limiter |
 | **DevOps & Containers** | Docker, Docker Compose, Nginx Alpine |
 
 ---
 
-## ⚡ Speed & High-Concurrency Scaling Optimizations
-
-1. **MongoDB Compound Indexing**:
-   - `User`: `{ isOnboarded: 1 }`, `{ nativeLanguage: 1, learningLanguage: 1 }`, text index on `fullName`.
-   - `FriendRequest`: `{ recipient: 1, status: 1 }`, `{ sender: 1, status: 1 }`, `{ sender: 1, recipient: 1 }`.
-   - Eliminates expensive full collection scans ($O(N) \rightarrow O(\log N)$).
-
-2. **Lean Query Serialization (`.lean()`)**:
-   - Queries use Mongoose `.lean()` to bypass heavy document hydration, boosting JSON serialization speed by **up to 4x**.
-
-3. **HTTP Response Compression (`compression`)**:
-   - Server-side Gzip/Deflate compression reduces API payload sizes by **70%–85%**, cutting network transfer latency.
-
-4. **Vite Rollup Code-Splitting**:
-   - Vendor chunks (`vendor-react`, `vendor-query`, `vendor-motion`, `vendor-stream-chat`, `vendor-stream-video`) are split for optimal browser caching.
-   - Initial application bundle size was reduced by **~90%** (from 2.4MB down to ~265KB).
-
-5. **Redis Data Caching**:
-   - Cache keys with automated TTL and instant cache invalidation upon mutation operations (accepting/declining requests or unfriending).
-
----
-
-## 🔌 API Endpoints Reference
+## API Endpoints Reference
 
 ### Authentication Routes (`/api/auth`)
-| Method | Endpoint | Description | Rate Limit |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/signup` | Register a new user account | 10 req / 15 min |
-| `POST` | `/api/auth/login` | Log in and issue JWT cookie | 10 req / 15 min |
-| `POST` | `/api/auth/logout` | Clear JWT session cookie | Standard |
-| `POST` | `/api/auth/onboarding` | Complete initial profile onboarding | Standard |
-| `PUT` | `/api/auth/profile` | Update profile bio, location, languages & avatar | Standard |
-| `GET` | `/api/auth/me` | Fetch authenticated user data | Standard |
-
-### User & Friendship Routes (`/api/users`)
-| Method | Endpoint | Description | Query Params |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/users` | Get recommended language learners | `search`, `nativeLanguage`, `learningLanguage`, `limit`, `page` |
-| `GET` | `/api/users/friends` | Get list of user's friends | None |
-| `DELETE` | `/api/users/friends/:id` | Remove a friend (mutual unfriending) | None |
-| `POST` | `/api/users/friend-request/:id` | Send a friend request to a user | None |
-| `PUT` | `/api/users/friend-request/:id/accept`| Accept an incoming friend request | None |
-| `DELETE` | `/api/users/friend-request/:id/reject`| Decline/reject an incoming friend request | None |
-| `DELETE` | `/api/users/friend-request/:id/cancel`| Cancel an outgoing pending friend request | None |
-| `GET` | `/api/users/friend-requests` | Get pending incoming & accepted requests | None |
-| `GET` | `/api/users/outgoing-friend-requests` | Get pending outgoing requests | None |
-
-### Chat & Video Routes (`/api/chat`)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/chat/token` | Generate a signed Stream user token for Chat & Video SDK |
+| `POST` | `/api/auth/demo-login` | 1-Click Recruiter Demo Login (`user1` or `user2`) |
+| `POST` | `/api/auth/signup` | Register a new user account |
+| `POST` | `/api/auth/login` | Log in and issue JWT cookie |
+| `POST` | `/api/auth/logout` | Clear JWT session cookie |
+| `POST` | `/api/auth/onboarding` | Complete initial profile onboarding |
+| `PUT` | `/api/auth/profile` | Update profile bio, location, languages, avatar |
+| `GET` | `/api/auth/me` | Fetch current authenticated user |
+
+### AI Assistance Routes (`/api/ai`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/ai/translate` | Translate text into target language using Gemini AI |
+| `POST` | `/api/ai/grammar-check` | Analyze sentence grammar, tone, and suggest alternatives |
+| `POST` | `/api/ai/partner-chat` | Chat with Gemini AI Language Practice Partner |
+
+### User and Friendship Routes (`/api/users`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/users` | Get recommended learners (supports `search`, `nativeLanguage`, `learningLanguage`) |
+| `GET` | `/api/users/friends` | Get current user's friends list |
+| `DELETE` | `/api/users/friends/:id` | Remove a friend (mutual unfriending) |
+| `POST` | `/api/users/friend-request/:id` | Send a friend request |
+| `PUT` | `/api/users/friend-request/:id/accept` | Accept an incoming friend request |
+| `DELETE` | `/api/users/friend-request/:id/reject` | Decline an incoming friend request |
+| `DELETE` | `/api/users/friend-request/:id/cancel` | Cancel an outgoing pending friend request |
+| `GET` | `/api/users/friend-requests` | Get pending incoming and accepted requests |
+| `GET` | `/api/users/outgoing-friend-requests` | Get pending outgoing requests |
+
+### Chat and Video Routes (`/api/chat`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/chat/token` | Generate Stream user token for Chat and Video SDK |
 
 ---
 
-## ⚙️ Environment Variables Setup
+## Environment Variables Configuration
 
 ### Backend (`backend/.env`)
 ```env
@@ -236,122 +210,72 @@ PORT=5001
 NODE_ENV=development
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET_KEY=your_secure_jwt_secret_key
-STEAM_API_KEY=your_stream_api_key
-STEAM_API_SECRET=your_stream_api_secret
+STREAM_API_KEY=your_stream_api_key
+STREAM_API_SECRET=your_stream_api_secret
+GEMINI_API_KEY=your_gemini_api_key
 REDIS_URI=redis://localhost:6379
+CLIENT_URL=http://localhost:5173
 ```
 
 ### Frontend (`frontend/.env`)
 ```env
 VITE_STREAM_API_KEY=your_stream_api_key
+VITE_API_URL=http://localhost:5001
 ```
 
 ---
 
-## 🚀 Getting Started
+## Installation and Setup
 
-### Option 1: Running with Docker (Recommended)
-
-Make sure [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) are installed.
+### Method 1: Running with Docker Compose (Recommended)
 
 ```bash
-# Build and launch all services (Redis, Backend, Frontend)
+# Build and run Redis, Backend API, and Frontend SPA
 docker compose up --build
 ```
 
-- **Frontend Application**: `http://localhost:5173`
-- **Backend API**: `http://localhost:5001`
-- **Redis Server**: `localhost:6379`
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5001`
+- Redis: `localhost:6379`
 
----
+### Method 2: Running Locally
 
-### Option 2: Running Locally
-
-#### 1. Clone the repository
 ```bash
-git clone https://github.com/Satyam6201/Connectify.git
-cd Connectify
-```
+# 1. Install dependencies
+npm run install
 
-#### 2. Install Dependencies
-```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-#### 3. Start Redis Server
-```bash
+# 2. Start Redis server
 redis-server
-```
 
-#### 4. Run Development Servers
-```bash
-# In one terminal: Start Backend
+# 3. Start development servers
+# Terminal 1 - Backend:
 cd backend
 npm run dev
 
-# In another terminal: Start Frontend
+# Terminal 2 - Frontend:
 cd frontend
 npm run dev
 ```
 
 ---
 
-## 🚀 Production Deployment Guide
+## Production Deployment
 
-### Part 1: Deploy Backend to Render
+### Backend Deployment (Render / Railway / VPS)
+1. Set Root Directory to `backend`.
+2. Build Command: `npm install`.
+3. Start Command: `npm start`.
+4. Add environment variables (`MONGO_URI`, `JWT_SECRET_KEY`, `STREAM_API_KEY`, `STREAM_API_SECRET`, `GEMINI_API_KEY`, `CLIENT_URL`, `REDIS_URI`).
 
-1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** -> **Web Service**.
-2. Connect your GitHub repository (`Connectify`).
-3. Configure the Web Service settings:
-   - **Name**: `connectify-backend` (or your choice)
-   - **Root Directory**: `backend`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start` (or `node src/server.js`)
-   - **Plan**: Free / Starter
-4. Add the following **Environment Variables** in the Render settings:
-   - `PORT`: `5001` (or let Render assign automatically)
-   - `NODE_ENV`: `production`
-   - `MONGO_URI`: `mongodb+srv://...` (your MongoDB Atlas connection URI)
-   - `JWT_SECRET_KEY`: `your_jwt_secret_key`
-   - `STREAM_API_KEY`: `your_stream_api_key`
-   - `STREAM_API_SECRET`: `your_stream_api_secret`
-   - `CLIENT_URL`: `https://connectify-videocall.vercel.app`
-   - *(Optional)* `REDIS_URI`: Upstash or Render Redis connection URI (rate limiter falls back to in-memory if omitted)
-5. Click **Deploy Web Service**.
-6. Deployed Backend URL: `https://connectify-6nim.onrender.com`.
+### Frontend Deployment (Vercel / Netlify / Cloudflare Pages)
+1. Set Root Directory to `frontend`.
+2. Framework Preset: `Vite`.
+3. Build Command: `npm run build`.
+4. Output Directory: `dist`.
+5. Add environment variables (`VITE_STREAM_API_KEY`, `VITE_API_URL`).
 
 ---
 
-### Part 2: Deploy Frontend to Vercel
-
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New...** -> **Project**.
-2. Import your GitHub repository (`Connectify`).
-3. In the project setup:
-   - **Root Directory**: Click "Edit" and choose `frontend`.
-   - **Framework Preset**: `Vite`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Add the following **Environment Variables** in Vercel:
-   - `VITE_STREAM_API_KEY`: `your_stream_api_key`
-   - `VITE_API_URL`: `https://connectify-6nim.onrender.com`
-5. Click **Deploy**.
-6. Once deployed, copy your Vercel URL and update the `CLIENT_URL` environment variable on Render to match your Vercel URL.
-
----
-
-## 👨‍💻 Author
-
-- **Satyam Kumar Mishra** – [GitHub Profile](https://github.com/Satyam6201)
-
----
-
-## 📄 License
+## License
 
 This project is licensed under the ISC License.
