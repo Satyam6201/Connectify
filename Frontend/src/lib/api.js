@@ -10,11 +10,6 @@ export const login = async (loginData) => {
   return response.data;
 };
 
-export const demoLogin = async (demoType) => {
-  const response = await axiosInstance.post("/auth/demo-login", { demoType });
-  return response.data;
-};
-
 export const logout = async () => {
   const response = await axiosInstance.post("/auth/logout");
   return response.data;

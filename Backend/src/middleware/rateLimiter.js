@@ -2,6 +2,16 @@ import { redis } from "../lib/redis.js";
 
 const memoryStore = new Map();
 
+// Periodically clean up expired memory store keys to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, record] of memoryStore.entries()) {
+    if (now > record.resetTime) {
+      memoryStore.delete(key);
+    }
+  }
+}, 5 * 60 * 1000).unref();
+
 export const rateLimit = ({
   windowSeconds = 60,
   maxRequests = 100,
@@ -9,7 +19,11 @@ export const rateLimit = ({
 } = {}) => {
   return async (req, res, next) => {
     try {
-      const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "anonymous";
+      const forwarded = req.headers["x-forwarded-for"];
+      const clientIp = typeof forwarded === "string"
+        ? forwarded.split(",")[0].trim()
+        : req.socket?.remoteAddress || "anonymous";
+
       const identifier = req.user?._id?.toString() || clientIp;
       const key = `ratelimit:${identifier}:${req.baseUrl || ""}${req.path}`;
 
@@ -70,7 +84,7 @@ export const rateLimit = ({
 
 export const apiLimiter = rateLimit({
   windowSeconds: 60,
-  maxRequests: 100,
+  maxRequests: 120,
   message: "Too many requests to the API. Please wait a minute and try again.",
 });
 
@@ -78,4 +92,10 @@ export const authLimiter = rateLimit({
   windowSeconds: 15 * 60,
   maxRequests: 10,
   message: "Too many login/signup attempts. Please try again after 15 minutes.",
+});
+
+export const aiLimiter = rateLimit({
+  windowSeconds: 60,
+  maxRequests: 30,
+  message: "Too many AI requests. Please wait a minute before making more requests.",
 });

@@ -36,6 +36,9 @@ const CallPage = () => {
   });
 
   useEffect(() => {
+    let activeClient = null;
+    let activeCall = null;
+
     const initCall = async () => {
       if (!tokenData?.token || !authUser || !callId) return;
 
@@ -55,6 +58,8 @@ const CallPage = () => {
         const callInstance = videoClient.call("default", callId);
         await callInstance.join({ create: true });
 
+        activeClient = videoClient;
+        activeCall = callInstance;
         setClient(videoClient);
         setCall(callInstance);
       } catch (error) {
@@ -66,6 +71,15 @@ const CallPage = () => {
     };
 
     initCall();
+
+    return () => {
+      if (activeCall) {
+        activeCall.leave().catch(() => {});
+      }
+      if (activeClient) {
+        activeClient.disconnectUser().catch(() => {});
+      }
+    };
   }, [tokenData, authUser, callId]);
 
   if (isLoading || isConnecting) return <PageLoader />;

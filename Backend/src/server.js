@@ -22,8 +22,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+app.disable("x-powered-by");
 app.set("trust proxy", 1);
 app.use(compression());
+
+// Essential HTTP Security Headers
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  next();
+});
 
 const rawClientUrls = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : [];
 const allowedOrigins = [
@@ -99,6 +109,17 @@ if (fs.existsSync(distPath)) {
     });
   });
 }
+
+// Global safe error handler
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err.message);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(err.status || 500).json({
+    message: process.env.NODE_ENV === "production" ? "Internal Server Error" : err.message,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

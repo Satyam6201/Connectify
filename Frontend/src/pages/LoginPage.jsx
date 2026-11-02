@@ -1,30 +1,15 @@
 import { useState } from "react";
-import { FiArrowRight, FiCheckCircle, FiGlobe, FiUserCheck, FiZap } from "react-icons/fi";
+import { FiGlobe } from "react-icons/fi";
 import { Link } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useLogin from "../hooks/useLogin";
-import { demoLogin } from "../lib/api";
-import toast from "react-hot-toast";
 
 const LoginPage = () => {
-  const queryClient = useQueryClient();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
   const { isPending, error, loginMutation } = useLogin();
-
-  const { mutate: handleDemoLogin, isPending: isDemoPending } = useMutation({
-    mutationFn: demoLogin,
-    onSuccess: (data) => {
-      toast.success(`Logged in as ${data.user?.fullName}`);
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
-    },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || "Demo login failed");
-    },
-  });
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -45,41 +30,11 @@ const LoginPage = () => {
             </span>
           </div>
 
-          {/* Quick Recruiter Demo Box */}
-          <div className="bg-primary/10 border border-primary/30 rounded-2xl p-4 mb-5 space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider">
-                <FiZap className="size-3.5" />
-                Recruiter & Quick Demo Mode
-              </span>
-              <span className="badge badge-primary badge-xs font-semibold">1-Click</span>
-            </div>
-
-            <p className="text-[11px] opacity-75 leading-tight">
-              Test real-time chat, AI translation & video calls side-by-side across two tabs:
+          <div className="mb-5">
+            <h2 className="text-2xl font-bold">Welcome Back</h2>
+            <p className="text-xs sm:text-sm opacity-70 mt-1">
+              Sign in to continue your language learning journey.
             </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => handleDemoLogin("user1")}
-                disabled={isDemoPending || isPending}
-                className="btn btn-outline btn-primary btn-xs h-10 rounded-xl flex flex-col items-start justify-center p-2 text-left"
-              >
-                <span className="font-bold text-[11px] leading-tight">User 1: Alex</span>
-                <span className="text-[9px] opacity-70 font-normal">Native: EN | Learn: ES</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDemoLogin("user2")}
-                disabled={isDemoPending || isPending}
-                className="btn btn-outline btn-secondary btn-xs h-10 rounded-xl flex flex-col items-start justify-center p-2 text-left"
-              >
-                <span className="font-bold text-[11px] leading-tight">User 2: Elena</span>
-                <span className="text-[9px] opacity-70 font-normal">Native: ES | Learn: EN</span>
-              </button>
-            </div>
           </div>
 
           {error && (
@@ -88,7 +43,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-3.5">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="form-control w-full space-y-1">
               <label className="label py-0.5">
                 <span className="label-text font-medium text-xs">Email</span>
@@ -97,7 +52,7 @@ const LoginPage = () => {
                 type="email"
                 placeholder="name@example.com"
                 value={loginData.email}
-                className="input input-bordered w-full h-10 rounded-xl text-xs"
+                className="input input-bordered w-full h-11 rounded-xl text-sm"
                 required
                 onChange={(e) =>
                   setLoginData({
@@ -115,7 +70,7 @@ const LoginPage = () => {
               <input
                 type="password"
                 placeholder="********"
-                className="input input-bordered w-full h-10 rounded-xl text-xs"
+                className="input input-bordered w-full h-11 rounded-xl text-sm"
                 value={loginData.password}
                 required
                 onChange={(e) =>
@@ -129,21 +84,21 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="btn btn-primary w-full h-10 rounded-xl text-xs font-semibold mt-1"
-              disabled={isPending || isDemoPending}
+              className="btn btn-primary w-full h-11 rounded-xl text-sm font-semibold mt-2"
+              disabled={isPending}
             >
               {isPending ? (
                 <>
                   <span className="loading loading-spinner loading-xs"></span>
-                  Signing in...
+                  Signing In...
                 </>
               ) : (
-                "Sign In with Credentials"
+                "Sign In"
               )}
             </button>
 
-            <div className="text-center pt-1">
-              <p className="text-xs">
+            <div className="text-center pt-2">
+              <p className="text-xs sm:text-sm">
                 Don't have an account?{" "}
                 <Link to="/signup" className="text-primary font-semibold hover:underline">
                   Create one
@@ -164,7 +119,7 @@ const LoginPage = () => {
             </div>
             <h3 className="text-lg font-bold">Language Exchange & AI Assistant</h3>
             <p className="text-xs opacity-70 leading-relaxed">
-              Connect with native speakers, practice with Gemini AI, and start instant HD video calls.
+              Connect with native speakers, create art with Meta AI, and start instant HD video calls.
             </p>
           </div>
         </div>

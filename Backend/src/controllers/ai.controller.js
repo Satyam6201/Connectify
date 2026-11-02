@@ -1,9 +1,21 @@
 import { generateAIContent } from "../lib/gemini.js";
 
+const ALLOWED_STYLES = new Set([
+  "general",
+  "cinematic",
+  "anime",
+  "cyberpunk",
+  "3d-render",
+  "oil-painting",
+  "photorealistic",
+]);
+
 function buildImageUrl(prompt, style = "") {
   let enrichedPrompt = prompt.trim();
-  if (style && style !== "none" && style !== "general") {
-    enrichedPrompt = `${enrichedPrompt}, ${style} style, highly detailed, sharp focus`;
+  const safeStyle = ALLOWED_STYLES.has(style) ? style : "cinematic";
+
+  if (safeStyle !== "general") {
+    enrichedPrompt = `${enrichedPrompt}, ${safeStyle} style, highly detailed, sharp focus`;
   }
   const seed = Math.floor(Math.random() * 1000000);
   return {
@@ -16,15 +28,20 @@ export async function chatWithAI(req, res) {
   try {
     const { message, conversationHistory = [] } = req.body;
 
-    if (!message || !message.trim()) {
-      return res.status(400).json({ message: "Message is required" });
+    if (!message || typeof message !== "string" || !message.trim()) {
+      return res.status(400).json({ message: "Message is required and must be text" });
     }
 
     const trimmed = message.trim();
+    if (trimmed.length > 2000) {
+      return res.status(400).json({ message: "Message is too long (maximum 2000 characters)" });
+    }
+
+    const safeHistory = Array.isArray(conversationHistory) ? conversationHistory.slice(-6) : [];
 
     const imagineMatch = trimmed.match(/^[/]?(imagine|generate image of|create image of|draw|paint)\s+(.+)/i);
     if (imagineMatch) {
-      const imagePrompt = imagineMatch[2].trim();
+      const imagePrompt = imagineMatch[2].trim().slice(0, 500);
       const { imageUrl, enrichedPrompt } = buildImageUrl(imagePrompt);
       return res.status(200).json({
         reply: `Here is your generated image for: "${imagePrompt}"`,
@@ -42,9 +59,8 @@ export async function chatWithAI(req, res) {
 - Use markdown formatting with bullet points, bold text, or code snippets when helpful.
 - If the user asks you to create or generate an image, advise them they can also type "/imagine <description>" or click the image generation button.`;
 
-    const historyContext = conversationHistory
-      .slice(-6)
-      .map((item) => `${item.sender === "user" ? "User" : "AI"}: ${item.text || item.reply || ""}`)
+    const historyContext = safeHistory
+      .map((item) => `${item.sender === "user" ? "User" : "AI"}: ${String(item.text || item.reply || "").slice(0, 500)}`)
       .join("\n");
 
     const prompt = `${historyContext ? `Chat History:\n${historyContext}\n\n` : ""}User: ${trimmed}\nAI:`;
@@ -61,16 +77,23 @@ export async function generateImage(req, res) {
   try {
     const { prompt, style = "cinematic" } = req.body;
 
-    if (!prompt || !prompt.trim()) {
+    if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
       return res.status(400).json({ message: "Image prompt is required" });
     }
 
-    const { imageUrl, enrichedPrompt } = buildImageUrl(prompt, style);
+    const cleanPrompt = prompt.trim();
+    if (cleanPrompt.length > 500) {
+      return res.status(400).json({ message: "Image prompt is too long (maximum 500 characters)" });
+    }
+
+    const safeStyle = typeof style === "string" && ALLOWED_STYLES.has(style) ? style : "cinematic";
+    const { imageUrl, enrichedPrompt } = buildImageUrl(cleanPrompt, safeStyle);
+
     res.status(200).json({
       imageUrl,
-      prompt: prompt.trim(),
+      prompt: cleanPrompt,
       enrichedPrompt,
-      style,
+      style: safeStyle,
     });
   } catch (error) {
     console.error("Image generation error:", error.message);
@@ -82,17 +105,25 @@ export async function translateMessage(req, res) {
   try {
     const { text, targetLanguage } = req.body;
 
-    if (!text || !text.trim()) {
+    if (!text || typeof text !== "string" || !text.trim()) {
       return res.status(400).json({ message: "Text to translate is required" });
     }
 
-    const language = targetLanguage || req.user?.nativeLanguage || "English";
+    const trimmedText = text.trim();
+    if (trimmedText.length > 2000) {
+      return res.status(400).json({ message: "Text is too long for translation (maximum 2000 characters)" });
+    }
 
-    const prompt = `Translate the following message into ${language}.
+    const safeLanguage =
+      typeof targetLanguage === "string" && targetLanguage.trim()
+        ? targetLanguage.trim().slice(0, 50).replace(/[^a-zA-Z\s]/g, "")
+        : req.user?.nativeLanguage || "English";
+
+    const prompt = `Translate the following message into ${safeLanguage}.
 Return strictly and only the translated text, without quotes, explanations, or extra commentary.
 
 Original Text:
-${text.trim()}`;
+${trimmedText}`;
 
     const translatedText = await generateAIContent(prompt);
     res.status(200).json({ translatedText });
@@ -106,14 +137,22 @@ export async function checkGrammarAndTone(req, res) {
   try {
     const { text, learningLanguage } = req.body;
 
-    if (!text || !text.trim()) {
+    if (!text || typeof text !== "string" || !text.trim()) {
       return res.status(400).json({ message: "Text to check is required" });
     }
 
-    const language = learningLanguage || req.user?.learningLanguage || "English";
+    const trimmedText = text.trim();
+    if (trimmedText.length > 2000) {
+      return res.status(400).json({ message: "Text is too long (maximum 2000 characters)" });
+    }
 
-    const prompt = `You are an expert language teacher and coach. Analyze the following sentence written in ${language}:
-"${text.trim()}"
+    const safeLanguage =
+      typeof learningLanguage === "string" && learningLanguage.trim()
+        ? learningLanguage.trim().slice(0, 50).replace(/[^a-zA-Z\s]/g, "")
+        : req.user?.learningLanguage || "English";
+
+    const prompt = `You are an expert language teacher and coach. Analyze the following sentence written in ${safeLanguage}:
+"${trimmedText}"
 
 Provide feedback in valid JSON format only, with no surrounding markdown or backticks:
 {

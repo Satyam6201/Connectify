@@ -24,10 +24,6 @@ The application is built for scalability and low latency, featuring Redis cachin
 
 ## Key Features
 
-### Recruiter and Quick Demo Mode
-- **1-Click Demo Login**: Instantly log in as Demo User 1 (*Alex - Native English, Learning Spanish*) or Demo User 2 (*Elena - Native Spanish, Learning English*) right from the login screen.
-- Pre-configured friendships and synchronized Stream Chat credentials allow interviewers and recruiters to test real-time chat, HD video calling, and toast alerts side-by-side across two browser windows in seconds.
-
 ### Meta AI Assistant & AI Image Generation
 - **Ask Anything & Chat Assistant**: Versatile conversational AI (works like Meta AI in WhatsApp) providing answers to general knowledge questions, language learning, programming solutions, and writing assistance.
 - **Instant AI Image Generation**: Generate stunning, high-resolution artwork and graphics by typing `/imagine <prompt>` or selecting the dedicated Image Mode with customizable art styles (Cinematic, Anime, Cyberpunk, 3D Render, Oil Painting, Photorealistic).
@@ -169,7 +165,6 @@ Connectify/
 ### Authentication Routes (`/api/auth`)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/auth/demo-login` | 1-Click Recruiter Demo Login (`user1` or `user2`) |
 | `POST` | `/api/auth/signup` | Register a new user account |
 | `POST` | `/api/auth/login` | Log in and issue JWT cookie |
 | `POST` | `/api/auth/logout` | Clear JWT session cookie |

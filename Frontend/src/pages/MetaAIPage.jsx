@@ -142,6 +142,7 @@ const MetaAIPage = () => {
     a.href = url;
     a.download = `connectify-ai-${Date.now()}.jpg`;
     a.target = "_blank";
+    a.rel = "noopener noreferrer";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

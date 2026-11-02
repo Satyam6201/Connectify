@@ -39,6 +39,8 @@ const ChatPage = () => {
   });
 
   useEffect(() => {
+    let activeClient = null;
+
     const initChat = async () => {
       if (!tokenData?.token || !authUser) return;
 
@@ -61,6 +63,7 @@ const ChatPage = () => {
 
         await currChannel.watch();
 
+        activeClient = client;
         setChatClient(client);
         setChannel(currChannel);
       } catch (error) {
@@ -72,6 +75,12 @@ const ChatPage = () => {
     };
 
     initChat();
+
+    return () => {
+      if (activeClient) {
+        activeClient.disconnectUser().catch(() => {});
+      }
+    };
   }, [tokenData, authUser, targetUserId]);
 
   const handleVideoCall = () => {
@@ -81,6 +90,14 @@ const ChatPage = () => {
         text: `I've started a video call. Join here: ${callUrl}`,
       });
       toast.success("Video call link sent");
+    }
+  };
+
+  const handleApplyText = (text) => {
+    if (channel && text) {
+      channel.sendMessage({ text });
+      toast.success("Sent message to chat!");
+      setIsAIOpen(false);
     }
   };
 
@@ -120,6 +137,7 @@ const ChatPage = () => {
         isOpen={isAIOpen}
         onClose={() => setIsAIOpen(false)}
         authUser={authUser}
+        onApplyText={handleApplyText}
       />
     </div>
   );

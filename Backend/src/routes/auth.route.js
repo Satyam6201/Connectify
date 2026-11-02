@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  demoLogin,
   login,
   logout,
   onboard,
@@ -14,7 +13,6 @@ const router = express.Router();
 
 router.post("/signup", authLimiter, signup);
 router.post("/login", authLimiter, login);
-router.post("/demo-login", demoLogin);
 router.post("/logout", logout);
 router.post("/onboarding", protectRoute, onboard);
 router.put("/profile", protectRoute, updateProfile);

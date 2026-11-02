@@ -1,6 +1,11 @@
+import mongoose from "mongoose";
 import FriendRequest from "../models/FriendRequest.js";
 import User from "../models/User.js";
 import { redis } from "../lib/redis.js";
+
+const escapeRegex = (string) => {
+  return string.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 
 const invalidateUserCache = async (userId) => {
   try {
@@ -15,7 +20,7 @@ const invalidateUserCache = async (userId) => {
 
 export async function getRecommendedUsers(req, res) {
   try {
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id;
     const currentUser = req.user;
     const { search, nativeLanguage, learningLanguage, limit = 50, page = 1 } = req.query;
 
@@ -27,16 +32,17 @@ export async function getRecommendedUsers(req, res) {
       isOnboarded: true,
     };
 
-    if (search && search.trim()) {
-      filter.fullName = { $regex: search.trim(), $options: "i" };
+    if (search && typeof search === "string" && search.trim()) {
+      const sanitizedSearch = escapeRegex(search.trim().slice(0, 80));
+      filter.fullName = { $regex: sanitizedSearch, $options: "i" };
     }
 
-    if (nativeLanguage && nativeLanguage.trim()) {
-      filter.nativeLanguage = nativeLanguage.trim().toLowerCase();
+    if (nativeLanguage && typeof nativeLanguage === "string" && nativeLanguage.trim()) {
+      filter.nativeLanguage = nativeLanguage.trim().toLowerCase().slice(0, 50);
     }
 
-    if (learningLanguage && learningLanguage.trim()) {
-      filter.learningLanguage = learningLanguage.trim().toLowerCase();
+    if (learningLanguage && typeof learningLanguage === "string" && learningLanguage.trim()) {
+      filter.learningLanguage = learningLanguage.trim().toLowerCase().slice(0, 50);
     }
 
     const recommendedUsers = await User.find(filter)
@@ -55,7 +61,7 @@ export async function getRecommendedUsers(req, res) {
 
 export async function getMyFriends(req, res) {
   try {
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id.toString();
     const cacheKey = `friends:${currentUserId}`;
 
     if (redis.status === "ready") {
@@ -84,8 +90,12 @@ export async function getMyFriends(req, res) {
 
 export async function sendFriendRequest(req, res) {
   try {
-    const myId = req.user.id;
+    const myId = req.user._id.toString();
     const { id: recipientId } = req.params;
+
+    if (!recipientId || !mongoose.Types.ObjectId.isValid(recipientId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
 
     if (myId === recipientId) {
       return res.status(400).json({ message: "You cannot send a friend request to yourself" });
@@ -96,7 +106,7 @@ export async function sendFriendRequest(req, res) {
       return res.status(404).json({ message: "Recipient not found" });
     }
 
-    if (recipient.friends?.includes(myId)) {
+    if (recipient.friends?.some((f) => f.toString() === myId)) {
       return res.status(400).json({ message: "You are already friends with this user" });
     }
 
@@ -129,7 +139,11 @@ export async function sendFriendRequest(req, res) {
 export async function acceptFriendRequest(req, res) {
   try {
     const { id: requestId } = req.params;
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id.toString();
+
+    if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
+      return res.status(400).json({ message: "Invalid request ID" });
+    }
 
     const friendRequest = await FriendRequest.findById(requestId);
     if (!friendRequest) {
@@ -164,7 +178,11 @@ export async function acceptFriendRequest(req, res) {
 export async function rejectFriendRequest(req, res) {
   try {
     const { id: requestId } = req.params;
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id.toString();
+
+    if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
+      return res.status(400).json({ message: "Invalid request ID" });
+    }
 
     const friendRequest = await FriendRequest.findOne({
       _id: requestId,
@@ -191,7 +209,11 @@ export async function rejectFriendRequest(req, res) {
 export async function cancelFriendRequest(req, res) {
   try {
     const { id: requestId } = req.params;
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id.toString();
+
+    if (!requestId || !mongoose.Types.ObjectId.isValid(requestId)) {
+      return res.status(400).json({ message: "Invalid request ID" });
+    }
 
     const friendRequest = await FriendRequest.findOne({
       _id: requestId,
@@ -217,8 +239,12 @@ export async function cancelFriendRequest(req, res) {
 
 export async function removeFriend(req, res) {
   try {
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id.toString();
     const { id: friendId } = req.params;
+
+    if (!friendId || !mongoose.Types.ObjectId.isValid(friendId)) {
+      return res.status(400).json({ message: "Invalid friend ID" });
+    }
 
     await User.findByIdAndUpdate(currentUserId, {
       $pull: { friends: friendId },
@@ -248,12 +274,12 @@ export async function removeFriend(req, res) {
 export async function getFriendRequest(req, res) {
   try {
     const incomingReqs = await FriendRequest.find({
-      recipient: req.user.id,
+      recipient: req.user._id,
       status: "pending",
     }).populate("sender", "fullName profilePic nativeLanguage learningLanguage bio location");
 
     const acceptedReqs = await FriendRequest.find({
-      sender: req.user.id,
+      sender: req.user._id,
       status: "accepted",
     }).populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
 
@@ -267,7 +293,7 @@ export async function getFriendRequest(req, res) {
 export async function getOutgoingFriendReqs(req, res) {
   try {
     const outgoingRequests = await FriendRequest.find({
-      sender: req.user.id,
+      sender: req.user._id,
       status: "pending",
     }).populate("recipient", "fullName profilePic nativeLanguage learningLanguage bio location");
 
