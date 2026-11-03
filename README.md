@@ -53,70 +53,122 @@ The following diagram illustrates the multi-tier architectural layout of Connect
 
 ```mermaid
 flowchart TD
-    subgraph ClientTier ["Client Presentation Tier (Browser / Mobile)"]
-        SPA["React 19 Single Page Application"]
-        UI["Tailwind CSS + DaisyUI (32 Themes)"]
+    subgraph ClientTier ["1. Client Presentation Layer (Browser / Mobile)"]
+        SPA["React 19 SPA (Vite + Tailwind + DaisyUI)"]
         QueryState["TanStack React Query v5 & Zustand"]
         StreamChatUI["Stream Chat React SDK"]
         StreamVideoUI["Stream Video React SDK"]
-        SPA --- UI
-        SPA --- QueryState
-        SPA --- StreamChatUI
-        SPA --- StreamVideoUI
     end
 
-    subgraph EdgeLayer ["Edge, Reverse Proxy & Security"]
-        Nginx["Nginx Reverse Proxy / Static Host"]
-        CORS["Strict CORS & Security Headers"]
+    subgraph GatewayTier ["2. Edge & Security Gateway"]
+        NginxGateway["Nginx Reverse Proxy & Express Gateway"]
+        SecurityMW["CORS & HTTP Security Headers"]
         RateLimiter["Sliding-Window Rate Limiter"]
-        Compression["Gzip / Deflate Compression"]
-        Nginx --> CORS --> RateLimiter --> Compression
     end
 
-    subgraph ApplicationTier ["Application Server Tier (Node.js & Express)"]
-        AuthService["Auth Controller & JWT Verification"]
-        UserEngine["User & Language Matching Engine"]
-        StreamTokenService["Stream Credentials & Token Minting"]
+    subgraph AppTier ["3. Application Server Tier (Node.js & Express)"]
+        AuthService["Auth Controller (JWT & Bcrypt)"]
+        UserEngine["User Matching & Friendship Engine"]
+        StreamService["Stream Token Minting Service"]
         AIEngine["AI Controller (Gemini & Image Engine)"]
     end
 
-    subgraph PersistenceTier ["Data & Caching Tier"]
-        MongoDB[("MongoDB Atlas Database")]
-        UserColl["Users Collection (Compound Indexed)"]
-        ReqColl["FriendRequests Collection"]
-        RedisServer[("Redis 7 In-Memory Cache")]
-        RateStore["Sliding Window Store (ZSET / TTL)"]
-        MongoDB --- UserColl
-        MongoDB --- ReqColl
-        RedisServer --- RateStore
+    subgraph PersistenceTier ["4. Persistence & In-Memory Tier"]
+        MongoDB[("MongoDB Atlas (Users & FriendRequests)")]
+        RedisServer[("Redis 7 (Sliding Window ZSET & TTL)")]
     end
 
-    subgraph ExternalServices ["External Real-Time & Cloud Infrastructure"]
+    subgraph CloudTier ["5. Real-Time & Generative Cloud Services"]
         StreamChatEdge["Stream Chat Network (WebSockets)"]
         StreamVideoSFU["Stream WebRTC Edge (SFU Mesh)"]
-        GeminiAPI["Google Gemini AI (Language Engine)"]
-        PollinationsAPI["Pollinations.ai (Diffusion Engine)"]
+        GeminiAPI["Google Gemini 2.5 Flash API"]
+        PollinationsAPI["Pollinations.ai Diffusion Engine"]
     end
 
-    %% Communication Paths
-    ClientTier -->|HTTPS / REST API Requests| Nginx
-    Compression --> AuthService
-    Compression --> UserEngine
-    Compression --> StreamTokenService
-    Compression --> AIEngine
+    %% Client to Gateway
+    SPA -->|HTTPS / REST API Requests| NginxGateway
+    NginxGateway --> SecurityMW
+    SecurityMW --> RateLimiter
 
+    %% Gateway to Controllers
+    RateLimiter --> AuthService
+    RateLimiter --> UserEngine
+    RateLimiter --> StreamService
+    RateLimiter --> AIEngine
+
+    %% Database Operations
     AuthService --> MongoDB
     UserEngine --> MongoDB
-    RateLimiter <--> RedisServer
+    RateLimiter -.-> RedisServer
 
-    StreamTokenService -->|Server-Side Minting| StreamChatEdge
-    StreamTokenService -->|Server-Side Minting| StreamVideoSFU
-
+    %% Token Minting & AI Integration
+    StreamService -->|Server Token Minting| StreamChatEdge
+    StreamService -->|Server Token Minting| StreamVideoSFU
     AIEngine -->|Generative Prompts| GeminiAPI
     AIEngine -->|Diffusion Rendering| PollinationsAPI
 
-    StreamChatUI <==>|Direct WebSocket Mesh (Chat/Presence)| StreamChatEdge
-    StreamVideoUI <==>|Direct WebRTC Audio/Video Streams| StreamVideoSFU
+    %% Real-Time Client Connections
+    StreamChatUI -.->|Direct WebSockets (Chat & Presence)| StreamChatEdge
+    StreamVideoUI -.->|Direct WebRTC Audio/Video Streams| StreamVideoSFU
+```
+
+### Architectural Layout Overview
+
+```
++-----------------------------------------------------------------------------------+
+|                        1. CLIENT PRESENTATION LAYER                               |
+|   +---------------------------------------------------------------------------+   |
+|   |                  React 19 Single Page Application (SPA)                   |   |
+|   |   - Tailwind CSS + DaisyUI (32 Theme Presets)                             |   |
+|   |   - TanStack React Query v5 (Optimistic UI & Cache) + Zustand State       |   |
+|   |   - Stream Chat React SDK (Real-Time Messaging & Presence)                |   |
+|   |   - Stream Video React SDK (Low-Latency WebRTC HD Video Calling)          |   |
+|   +---------------------------------------------------------------------------+   |
++--------------------------+-----------------------+------------------+-------------+
+                           | HTTPS REST API        | WebSockets       | WebRTC SFU
+                           v                       |                  |
++--------------------------------------------------+   |                  |
+|          2. EDGE, GATEWAY & SECURITY LAYER       |   |                  |
+|   - Nginx Reverse Proxy (Static Asset Host)      |   |                  |
+|   - Strict CORS Validation & HTTP Security Headers|   |                  |
+|   - Redis Sliding-Window Rate Limiter            |   |                  |
+|   - Gzip Compression & Trust-Proxy Layer         |   |                  |
++--------------------------+-----------------------+   |                  |
+                           | Forwarded Requests        |                  |
+                           v                           |                  |
++--------------------------------------------------+   |                  |
+|      3. APPLICATION SERVER TIER (Node.js/Express)|   |                  |
+|   +-------------------+  +-------------------+   |   |                  |
+|   | Auth Controller   |  | User Discovery    |   |   |                  |
+|   | - JWT in HttpOnly |  | - Mutual Matching |   |   |                  |
+|   | - Bcrypt Salting  |  | - Friendship Graph|   |   |                  |
+|   +-------------------+  +-------------------+   |   |                  |
+|   +-------------------+  +-------------------+   |   |                  |
+|   | Stream Minting    |  | Gemini & Image AI |   |   |                  |
+|   | - HMAC-SHA256 Token  | - Gemini 2.5 Flash|   |   |                  |
+|   | - User Upsert     |  | - Pollinations AI |   |   |                  |
+|   +-------------------+  +-------------------+   |   |                  |
++--------------+-------------------+---------------+   |                  |
+               | Read/Write        | Slid. Window      |                  |
+               v                   v                   |                  |
++-----------------------+ +------------------------+   |                  |
+|  4. PERSISTENCE TIER  | |   IN-MEMORY CACHE      |   |                  |
+|  MongoDB Atlas        | |   Redis 7 In-Memory    |   |                  |
+|  - Users Collection   | |   - Atomic ZSET Window |   |                  |
+|  - FriendRequests     | |   - TTL Purge Map      |   |                  |
++-----------------------+ +------------------------+   |                  |
+                                                       v                  v
++-----------------------------------------------------------------------------------+
+|                     5. EXTERNAL CLOUD & REAL-TIME SERVICES                        |
+|  +---------------------------+  +---------------------------------------------+   |
+|  | Stream Chat Edge Network  |  | Stream Video SFU Mesh                       |   |
+|  | (Persistent WS Connection)|  | (1-on-1 Low-Latency Audio/Video Relay)      |   |
+|  +---------------------------+  +---------------------------------------------+   |
+|  +---------------------------+  +---------------------------------------------+   |
+|  | Google Gemini AI API      |  | Pollinations.ai Diffusion Engine            |   |
+|  | (Translation & Tone Coach)|  | (Fast Generative Image Rendering)           |   |
+|  +---------------------------+  +---------------------------------------------+   |
++-----------------------------------------------------------------------------------+
 ```
 
 ---
@@ -130,12 +182,12 @@ Connectify implements low-latency 1-on-1 HD video calling using the Stream Video
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Alice as User Alice (Caller)
-    participant ClientA as Alice's Browser
-    participant Backend as Connectify API
-    participant StreamSFU as Stream WebRTC SFU
-    participant ClientB as Bob's Browser
-    actor Bob as User Bob (Callee)
+    actor Alice as "Alice (Caller)"
+    participant ClientA as "Alice Web Browser"
+    participant Backend as "Connectify API"
+    participant StreamSFU as "Stream WebRTC SFU"
+    participant ClientB as "Bob Web Browser"
+    actor Bob as "Bob (Callee)"
 
     Alice->>ClientA: Clicks "Launch Video Call"
     ClientA->>Backend: GET /api/chat/token (JWT Auth Cookie)
@@ -150,9 +202,9 @@ sequenceDiagram
     Backend-->>ClientB: Returns Signed Stream Token
     ClientB->>StreamSFU: Join Call (callId) with Local Media Stream
 
-    Note over ClientA,StreamSFU,ClientB: WebRTC Negotiation: SDP Offer/Answer + ICE Candidates
-    StreamSFU-->>ClientA: Forward Bob's Encrypted Media Tracks
-    StreamSFU-->>ClientB: Forward Alice's Encrypted Media Tracks
+    Note over ClientA,ClientB: WebRTC Negotiation: SDP Offer/Answer & ICE Candidates via SFU
+    StreamSFU-->>ClientA: Forward Bob Encrypted Media Tracks
+    StreamSFU-->>ClientB: Forward Alice Encrypted Media Tracks
     Note over ClientA,ClientB: HD Video & Audio streaming peer-to-SFU
 
     Alice->>ClientA: Clicks "Leave Call"
@@ -169,14 +221,14 @@ The chat architecture couples persistent WebSocket communication with on-demand 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Alice as Alice (Native English, Learning Spanish)
-    participant ChatDrawer as AIAssistantDrawer / ChatPage
-    participant Backend as Connectify API (/api/ai)
-    participant Gemini as Google Gemini 2.5 Flash
-    participant StreamWS as Stream Chat WebSockets
-    actor Bob as Bob (Native Spanish, Learning English)
+    actor Alice as "Alice (Native English, Learning Spanish)"
+    participant ChatDrawer as "AI Assistant Drawer"
+    participant Backend as "Connectify API (/api/ai)"
+    participant Gemini as "Google Gemini 2.5 Flash"
+    participant StreamWS as "Stream Chat WebSockets"
+    actor Bob as "Bob (Native Spanish, Learning English)"
 
-    Alice->>ChatDrawer: Types draft: "Hola amigo, como estas hoy?"
+    Alice->>ChatDrawer: Types draft: Hola amigo, como estas hoy?
     Alice->>ChatDrawer: Clicks "Check Grammar & Tone"
     ChatDrawer->>Backend: POST /api/ai/grammar-check (message, targetLanguage)
     Backend->>Backend: Validate payload & rate limit (aiLimiter: 30 req/min)
@@ -188,7 +240,7 @@ sequenceDiagram
     Alice->>StreamWS: Send Message to Bob
     StreamWS-->>Bob: Real-Time Message Received via WebSocket
     Bob->>Bob: Clicks "Translate" button on incoming bubble
-    Bob->>Backend: POST /api/ai/translate { text, targetLanguage: "Spanish" }
+    Bob->>Backend: POST /api/ai/translate (targetLanguage: Spanish)
     Backend->>Gemini: generateAIContent(translation prompt)
     Gemini-->>Backend: Precise natural translation
     Backend-->>Bob: JSON { translatedText }
@@ -203,19 +255,19 @@ Connectify features a Meta AI conversational assistant (similar to Meta AI in Wh
 
 ```mermaid
 flowchart TD
-    UserQuery["User submits input in Meta AI page"] --> CommandCheck{"Does prompt start with '/imagine' or Image Mode active?"}
+    UserQuery["User submits input in Meta AI page"] --> CommandCheck{"Does prompt start with /imagine or Image Mode active?"}
 
     %% Image Branch
     CommandCheck -->|Yes: Image Prompt| CleanPrompt["Extract text prompt & chosen style preset"]
     CleanPrompt --> StyleMapping["Append visual descriptors (e.g. 3D Render, Anime, Cyberpunk, 8K)"]
-    StyleMapping --> ValidateBounds["Enforce safety limits (<= 500 chars, whitelist styles)"]
+    StyleMapping --> ValidateBounds["Enforce safety limits (max 500 chars, whitelist styles)"]
     ValidateBounds --> GenSeed["Generate cryptographic pseudo-random seed"]
     GenSeed --> Pollinations["Query Pollinations AI Diffusion Endpoint"]
     Pollinations --> ImageOutput["Return high-res image URL (1024x1024, nologo)"]
     ImageOutput --> ModalView["Render in chat with Fullscreen Preview & Download Actions"]
 
     %% Text Branch
-    CommandCheck -->|No: Text Query| SanitizeMsg["Sanitize message (<= 2000 chars)"]
+    CommandCheck -->|No: Text Query| SanitizeMsg["Sanitize message (max 2000 chars)"]
     SanitizeMsg --> CheckRateLimit["Check aiLimiter (30 req/min/IP)"]
     CheckRateLimit --> FormSystemPrompt["Inject conversational system prompt"]
     FormSystemPrompt --> GeminiFlash["Invoke Google Gemini 2.5 Flash via @google/genai"]
@@ -232,11 +284,11 @@ The platform pairs users based on complementary language goals: a user who speak
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Alice as Alice (Native: English, Target: Spanish)
-    participant Client as Connectify Web Client
-    participant Backend as Connectify API (/api/users)
-    participant Mongo as MongoDB Atlas
-    actor Bob as Bob (Native: Spanish, Target: English)
+    actor Alice as "Alice (Native English, Target Spanish)"
+    participant Client as "Connectify Web Client"
+    participant Backend as "Connectify API (/api/users)"
+    participant Mongo as "MongoDB Atlas"
+    actor Bob as "Bob (Native Spanish, Target English)"
 
     Alice->>Client: Navigates to Explore / Home Page
     Client->>Backend: GET /api/users?nativeLanguage=&learningLanguage=&search=
@@ -245,15 +297,15 @@ sequenceDiagram
     Backend->>Backend: Compute mutualMatch flag (nativeA == targetB && targetA == nativeB)
     Backend-->>Client: Return learners array (Bob marked as "Mutual Match")
 
-    Alice->>Client: Clicks "Send Friend Request" on Bob's card
+    Alice->>Client: Clicks "Send Friend Request" on Bob card
     Client->>Backend: POST /api/users/friend-request/:bobId
-    Backend->>Mongo: Validate IDs & Create FriendRequest (status: 'pending')
+    Backend->>Mongo: Validate IDs & Create FriendRequest (status: pending)
     Backend-->>Client: Request sent (Optimistic UI update)
     Backend-->>Bob: Real-Time Stream notification & badge increment
 
     Bob->>Client: Clicks "Accept" on notification toast
     Client->>Backend: PUT /api/users/friend-request/:requestId/accept
-    Backend->>Mongo: Transaction: status -> 'accepted', push each other to friends array
+    Backend->>Mongo: Transaction: status -> accepted, push each other to friends array
     Backend-->>Client: Success response
     Note over Alice,Bob: Alice and Bob are now friends and can initiate Chat and Video Calls
 ```
